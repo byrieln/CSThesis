@@ -1,0 +1,1 @@
+Invoke-WebRequest https://raw.githubusercontent.com/jpatokal/openflights/master/data/airports.dat -o data/airports.dat

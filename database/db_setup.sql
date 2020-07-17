@@ -2,12 +2,11 @@ create database if not exists routegen;
 use routegen;
 
 create table if not exists airport(
-	a_id int primary key,
+	a_icao char(4) primary key,
+	a_iata char(3),
     a_name varchar(128),
     a_city varchar(64),
     a_country varchar(64),
-    a_iata char(3),
-    a_icao char(4),
     a_lat double,
     a_long double,
     a_alt smallint,

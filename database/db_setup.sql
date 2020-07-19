@@ -2,11 +2,11 @@ create database if not exists routegen;
 use routegen;
 
 create table if not exists airport(
-	a_icao char(4) primary key,
-	a_iata char(3),
-    a_name varchar(128),
+	a_name varchar(128),
     a_city varchar(64),
     a_country varchar(64),
+    a_iata char(3),
+    a_icao char(4) primary key,
     a_lat double,
     a_long double,
     a_alt smallint,
@@ -14,7 +14,7 @@ create table if not exists airport(
     a_dst char(1)
 );
 
-create table if not exists airline(
+/*create table if not exists airline(
 	l_id int primary key,
     l_name varchar(128),
     l_alias varchar(32),
@@ -42,4 +42,4 @@ create table if not exists route(
     constraint route_r_airline_fk foreign key (r_airline) references airline(l_id),
     constraint route_r_src_fk foreign key (r_src) references airport(a_id),
     constraint route_r_dest_fk foreign key (r_dest) references airport(a_id)
-);
+);*/

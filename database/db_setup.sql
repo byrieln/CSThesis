@@ -14,18 +14,17 @@ create table if not exists airport(
     a_dst char(1)
 );
 
-/*create table if not exists airline(
-	l_id int primary key,
+create table if not exists airline(
     l_name varchar(128),
     l_alias varchar(32),
     l_iata char(2),
-    l_icao char(3),
+    l_icao char(3) primary key,
     l_call varchar(32),
     l_country varchar(64),
     l_active boolean
 );
 
-create table if not exists airplane(
+/*create table if not exists airplane(
 	p_id int primary key,
     p_name varchar(74),
     p_iata char(3),

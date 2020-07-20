@@ -6,7 +6,7 @@ cursor = db.cursor()
 
 
 
-with open("data/airports.dat", "r", encoding="utf8") as file:
+"""with open("data/airports.dat", "r", encoding="utf8") as file:
     #add_order = [5, 4, 1, 2, 3, ]
     for line in file:
         k = 0
@@ -26,19 +26,19 @@ with open("data/airports.dat", "r", encoding="utf8") as file:
             line = "\"".join(temp)
         airport = line.split(",")
         query = "INSERT INTO AIRPORT VALUES("
-        """
-            Query Structure:
-                	a_name varchar(128),
-                    a_city varchar(64),
-                    a_country varchar(64),
-                    a_iata char(3),
-                    a_icao char(4) primary key,
-                    a_lat double,
-                    a_long double,
-                    a_alt smallint,
-                    a_timezone float,
-                    a_dst char(1)
-        """
+"""
+            #Query Structure:
+             #   	a_name varchar(128),
+             #       a_city varchar(64),
+             #       a_country varchar(64),
+             #       a_iata char(3),
+             #       a_icao char(4) primary key,
+             #       a_lat double,
+             #       a_long double,
+             #       a_alt smallint,
+             #       a_timezone float,
+             #       a_dst char(1)
+"""
         #One airport in the database has both a null ICAO and IATA code, so it is omitted
         if airport[5] == '\\N':
             continue
@@ -59,28 +59,41 @@ with open("data/airports.dat", "r", encoding="utf8") as file:
             print("FAILED: ", query)
             break
 db.commit()
-        
 
-    
-"""for line in file:
-        print (line)
-        airport = line.split(',')
-        query = "INSERT INTO airport VALUES("
-        for i in range(10):
-            if airport[i] == '\\N':
-                airport[i] = 'NULL'
-            query += '{}, '.format(airport[i])
-        if airport[10] == '\\N':
-            airport[10] = 'NULL'
-        query += '{});'.format(airport[10])
-        print (query)
+
+
+with open("data/airlines.dat", "r", encoding="utf8") as file:
+    for line in file: 
+        print(line)
+        airline = line.split(',')
+        query = "INSERT INTO airline VALUES("
+        print(airline[4])
+        if airline[4] == "\"N/A\"":
+            print ("fail", line)
+            continue
+        if airline[6] == airline[6].upper():
+            airline[5], airline[6] = airline[6], airline[5]
+        for i in range(1,7):
+            if airline[i] == '""' or airline[i] == '\\N' or airline[i] == '"N/A"':
+                airline[i] = 'NULL'
+            query += '{}, '.format(airline[i])
+        if 'Y' in airline[7]:
+            airline[7] = "true"
+        else:
+            continue
+            airline[7] = "false"
+        if airline[4] == 'NULL':
+            continue
+        query += '{});'.format(airline[7])
         try:
+            print(query)
             cursor.execute(query)
-        except mysql.connector.DataError:
-            db.close()
-            break"""
-        #cursor.execute("INSERT INTO airport VALUES({},{},{},{},{},{},{},{},{},{},{})".format())
-db.commit()
+        except mysql.connector.IntegrityError:
+            print("Failed:", query)
+            continue
+db.commit()    
+"""
+
 
 
 print("FUUUUUUUCK")

@@ -92,7 +92,7 @@ with open("data/airlines.dat", "r", encoding="utf8") as file:
             print("Failed:", query)
             continue
 db.commit()    
-
+"""
 
 with open("data/planes.dat", "r", encoding='utf8') as file:
     #j = 0
@@ -107,7 +107,7 @@ with open("data/planes.dat", "r", encoding='utf8') as file:
                 else:
                     airplane[i] = 'NULL'
         if airplane[2] == 'NULL':
-            continue
+            airplane[2] = airplane[1] + '"'
         query = "INSERT INTO airplane VALUES({},{},{});".format(airplane[0], airplane[1], airplane[2][:-1])
         try:
             print(query)
@@ -117,7 +117,7 @@ with open("data/planes.dat", "r", encoding='utf8') as file:
             continue
         #j+=1
 db.commit()
-"""
+
 
 
 

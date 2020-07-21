@@ -92,6 +92,31 @@ with open("data/airlines.dat", "r", encoding="utf8") as file:
             print("Failed:", query)
             continue
 db.commit()    
+
+
+with open("data/planes.dat", "r", encoding='utf8') as file:
+    #j = 0
+    for line in file:
+        print(line)
+        airplane = line.split(',')
+        print (airplane)
+        for i in range(len(airplane)):
+            if  '\\N' in airplane[i]:
+                if i == 1:
+                    airplane[i] = 'NULL'
+                else:
+                    airplane[i] = 'NULL'
+        if airplane[2] == 'NULL':
+            continue
+        query = "INSERT INTO airplane VALUES({},{},{});".format(airplane[0], airplane[1], airplane[2][:-1])
+        try:
+            print(query)
+            cursor.execute(query)
+        except mysql.connector.IntegrityError:
+            print("Failed:", query)
+            continue
+        #j+=1
+db.commit()
 """
 
 

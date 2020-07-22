@@ -25,6 +25,12 @@ create table if not exists airline(
 );
 
 create table if not exists airplane(
+	p_icao char(4) primary key,
+    p_iata char(3),
+    p_name varchar(75)
+);
+
+/*create table if not exists airplane(
     p_name varchar(74),
     p_iata char(3),
     p_icao char(4) primary key

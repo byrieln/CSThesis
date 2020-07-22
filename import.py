@@ -93,7 +93,7 @@ with open("data/airlines.dat", "r", encoding="utf8") as file:
             continue
 db.commit()    
 """
-
+"""
 with open("data/planes.dat", "r", encoding='utf8') as file:
     #j = 0
     for line in file:
@@ -117,7 +117,24 @@ with open("data/planes.dat", "r", encoding='utf8') as file:
             continue
         #j+=1
 db.commit()
-
+"""
+with open("data/planes.xml", "r", encoding='utf8') as file:
+    every = file.read().split('|-')
+    for line in every[1:-1]:
+        if 'deprecated' in line:
+            continue
+        airplane = line.split(' ||' )
+        airplane[0] = airplane[0][3:]
+        airplane[1] = airplane[1][1:]
+        airplane[2] = airplane[2][3:-3]
+        if airplane[1] == '{{n/a}}':
+            airplane[1] = 'NULL'
+        else:
+            airplane[1] = '"' + airplane[1] + '"'
+        print(airplane)
+        query = 'INSERT INTO airplane VALUES("{}",{},"{}");'.format(airplane[0], airplane[1], airplane[2])
+        print(query)
+        cursor.execute(query)
 
 
 

@@ -118,25 +118,39 @@ with open("data/planes.dat", "r", encoding='utf8') as file:
         #j+=1
 db.commit()
 """
-with open("data/planes.xml", "r", encoding='utf8') as file:
-    every = file.read().split('|-')
-    for line in every[1:-1]:
-        if 'deprecated' in line:
-            continue
-        airplane = line.split(' ||' )
-        airplane[0] = airplane[0][3:]
-        airplane[1] = airplane[1][1:]
-        airplane[2] = airplane[2][3:-3]
-        if airplane[1] == '{{n/a}}':
-            airplane[1] = 'NULL'
+with open("data/planes.html", "r", encoding='utf8') as file:
+    every = file.read().split('<tr>')
+    airplane = ['','','']
+    for line in every[2:]: 
+        #print(line)
+        line = line.split('>')
+        #print(line)
+        #print(line[6])
+        airplane[0] = line[1][:line[1].find('<')]
+        airplane[1] = line[3][:line[3].find('<')]
+        if airplane[0] == 'A337' and airplane[1] == '':#Airpalne[1] is to future proof this slightly
+            airplane[2] = line[14][:line[14].find('<')]
+        elif airplane[0] == 'E75S/L': #Exception: Embraer 175
+            airplane[0] = 'E170'
         else:
-            airplane[1] = '"' + airplane[1] + '"'
+            airplane[2] = line[6][:line[6].find('<')]
+        
+        if airplane[1] == '"N/A"' or airplane[1] == '':
+            airplane[1] = 'NUL'
+        if '"' in airplane[2]:
+            temp = ''
+            for char in airplane[2]:
+                if char != '"':
+                    temp += char
+            airplane[2] = temp
         print(airplane)
-        query = 'INSERT INTO airplane VALUES("{}",{},"{}");'.format(airplane[0], airplane[1], airplane[2])
-        print(query)
-        cursor.execute(query)
-
-
+        query = 'INSERT INTO plane VALUES("{}", "{}", "{}");'.format(airplane[0], airplane[1], airplane[2])
+        try:
+            print(query)
+            cursor.execute(query)
+        except mysql.connector.IntegrityError:
+            print("Failed:", query)
+            continue
 
 print("FUUUUUUUCK")
 db.commit()

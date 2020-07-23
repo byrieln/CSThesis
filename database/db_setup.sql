@@ -24,16 +24,11 @@ create table if not exists airline(
     l_active boolean
 );
 
-create table if not exists airplane(
-	p_icao char(4) primary key,
+create table if not exists plane(
+	p_icao char(4),
     p_iata char(3),
-    p_name varchar(75)
-);
-
-/*create table if not exists airplane(
-    p_name varchar(74),
-    p_iata char(3),
-    p_icao char(4) primary key
+    p_name varchar(75),
+    primary key(p_icao, p_iata)
 );
 
 /*create table if not exists route(

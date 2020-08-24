@@ -16,6 +16,10 @@ from getpass import getpass
 def home():
     return render_template('index.html')
 
+@app.route('/index.html')
+def alt_home():
+    return render_template('index.html')
+
 @app.route('/navbar.html')
 def navbar():
     return render_template('navbar.html')

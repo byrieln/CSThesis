@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lange="en-US">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content ="width=device-width, initial-scale=1.0">
+		
+	</head>
+	<body>
+		<p>Route Generator by Range</p>
+		<div id="navbar"></div>
+		<form id="update">
+			<label for="dep">Departure:</label>
+			<input type="text" id="dep" name="dep">
+			<label for="arr">Arrival</label>
+			<input type="text" id="arr" name="arr">
+			<label for="range">Max. Range</label>
+			<input type="number" id="range" name="range" min="0">
+			<!--input type="submit" onclick= "submission()" value="Submit"-->
+			
+		</form>
+		<button id="submission" onclick="submission()">Hehehe</button>
+	</body>
+	
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script>
+			$('#navbar').load('navbar.html');
+	</script>
+	<script>
+		function submission() {
+			const form = document.getElementById("update");
+			const data = {
+				dep: form[0].value,
+				arr: form[1].value,
+				range: form[2].value
+			};
+			const param = {
+				headers: {
+					'Content-Type':'application/json'
+				},
+				method:"POST",
+				body:data
+			}
+			console.log(data)
+			const response = fetch("/range", param)
+			console.log(response)
+		}
+	</script>
+</html>

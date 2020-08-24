@@ -24,9 +24,20 @@ def alt_home():
 def navbar():
     return render_template('navbar.html')
 
+@app.route('/range.html')
+def range():
+    return render_template('range.html')
+
+
 @app.route('/favicon.ico')
 def icon():
-    return send_file(favicon.ico)
+    return send_file('favicon.ico')
+
+@app.route('/range', methods=['POST'])
+def rangeInput():
+    print("range")
+    print(request.data)
+    return "hi";
 
 if __name__ == "__main__":
     app.run()

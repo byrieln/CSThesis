@@ -1,21 +1,15 @@
 <!DOCTYPE html>
-<html lang="en-US">
-	<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='index.css')}}">
+<html lange="en-US">
 	<head>
-	
 		<meta charset="UTF-8">
 		<meta name="viewport" content ="width=device-width, initial-scale=1.0">
 		
-		<title>Route Picking Tool</title>
 	</head>
 	<body>
-	
-		<h1> HELLLO</h1>
-		
-		
+	<p> hi </p>
 		<div id="navbar"></div>
-		<p>Put some info here</p>
 	</body>
+	
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 	<script>
 			$('#navbar').load('navbar.html');

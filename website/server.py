@@ -37,7 +37,7 @@ def icon():
 def rangeInput():
     print("range")
     print(request.data)
-    return "hi";
+    return {"hi":"hi"};
 
 if __name__ == "__main__":
     app.run()

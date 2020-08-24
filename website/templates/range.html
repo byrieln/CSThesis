@@ -23,10 +23,10 @@
 	
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 	<script>
-			$('#navbar').load('navbar.html');
+		$('#navbar').load('navbar.html');
 	</script>
 	<script>
-		function submission() {
+		async function submission() {
 			const form = document.getElementById("update");
 			const data = {
 				dep: form[0].value,
@@ -35,14 +35,18 @@
 			};
 			const param = {
 				headers: {
-					'Content-Type':'application/json'
+					'Content-Type':'text/plain'
 				},
 				method:"POST",
-				body:data
+				body:JSON.stringify(data)
 			}
 			console.log(data)
-			const response = fetch("/range", param)
-			console.log(response)
+			fetch("/range", param)
+			.then(function(response) {
+				return response.json();
+			}).then(function(body) {
+				console.log(body);
+			});
 		}
 	</script>
 </html>

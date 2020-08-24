@@ -6,7 +6,7 @@ from flask import url_for
 from flask import make_response
 from flask import abort
 from flask import send_file
-
+#from range import rangeResponse
 app = Flask(__name__)
 
 import mysql.connector
@@ -35,9 +35,10 @@ def icon():
 
 @app.route('/range', methods=['POST'])
 def rangeInput():
-    print("range")
     print(request.data)
-    return {"hi":"hi"};
+    #rangeResponse(request.data)
+    return {"hi":"hi"}
+    #return rangeResponse(request.data)
 
 if __name__ == "__main__":
     app.run()

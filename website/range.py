@@ -29,8 +29,13 @@ def rangeResponse(data):
     
     return legs
 
-def findNrst(lat, long):
-    
+def findNrst(lat, long, rwy):
+    radius = 3443.9 #The radius of the earth in nautical miles
+    calc = "({} * 2  * atan((sqrt(pow(sin((a_lat - {})/2),2) + cos({}) * cos(a_lat) * pow(sin((a_long - {})/2),2)))/(sqrt(1-pow(sin((a_lat - {})/2),2) + cos({}) * cos(a_lat) * pow(sin((a_long - {})/2),2)))))".format(radius, lat, lat, long, lat, lat, long)
+    query = "select *, {} as 'Distance' from airport where a_rwy is not null ORDER BY Distance ASC LIMIT 50;".format(calc)
+    cursor.execute(query)
+    for i in cursor.fetchall():
+        print(i)
 
 def coords(airport):
     query = "select a_lat, a_long from airport where a_{} = '{}';".format(codeType(airport), airport)
@@ -82,4 +87,4 @@ def codeType(code):
 
 data = b'{"dep":"bikf","arr":"jfk","range":"1250"}'
 print(rangeResponse(data))
-print(findNrst(52.3124008, -48.1922503))
+print(findNrst(52.3124008, -48.1922503, 3000))

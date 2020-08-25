@@ -11,7 +11,8 @@ create table if not exists airport(
     a_long double,
     a_alt smallint,
     a_timezone float,
-    a_dst char(1)
+    a_dst char(1), 
+    a_rwy int
 );
 
 create table if not exists airline(
@@ -31,14 +32,3 @@ create table if not exists plane(
     primary key(p_icao, p_iata)
 );
 
-/*create table if not exists route(
-	r_id int primary key,
-    r_airline int,
-    r_src int,
-    r_dest int,
-    r_codeshare boolean,
-    r_plane char(3),
-    constraint route_r_airline_fk foreign key (r_airline) references airline(l_id),
-    constraint route_r_src_fk foreign key (r_src) references airport(a_id),
-    constraint route_r_dest_fk foreign key (r_dest) references airport(a_id)
-);*/

@@ -118,6 +118,7 @@ with open("data/planes.dat", "r", encoding='utf8') as file:
         #j+=1
 db.commit()
 """
+"""
 with open("data/planes.html", "r", encoding='utf8') as file:
     every = file.read().split('<tr>')
     airplane = ['','','']
@@ -151,6 +152,29 @@ with open("data/planes.html", "r", encoding='utf8') as file:
         except mysql.connector.IntegrityError:
             print("Failed:", query)
             continue
+"""
+
+with open("data/Airports.txt", "r", encoding="utf8") as file:
+    every = file.read().split('\n\n')[1:]
+    for i in every:
+        data = i.split(',')
+        icao = data[1]
+        query = 'SELECT * FROM airport WHERE a_icao = "{}";'.format(icao)
+        cursor.execute(query)
+        res = cursor.fetchall()
+        if(len(res) == 0):
+            continue
+        data = i.split('\n')[1:]
+        maxi = 0
+        for j in data:
+            #print(data)
+            length = int(j.split(',')[3])
+            if length > maxi:
+                maxi = length
+        query = "UPDATE airport SET a_rwy = {} WHERE a_icao = '{}';".format(maxi, icao)
+        print(query)
+        cursor.execute(query)
+        
 
 print("FUUUUUUUCK")
 db.commit()

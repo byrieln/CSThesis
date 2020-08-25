@@ -29,6 +29,9 @@ def rangeResponse(data):
     
     return legs
 
+def findNrst(lat, long):
+    
+
 def coords(airport):
     query = "select a_lat, a_long from airport where a_{} = '{}';".format(codeType(airport), airport)
     cursor.execute(query)
@@ -79,3 +82,4 @@ def codeType(code):
 
 data = b'{"dep":"bikf","arr":"jfk","range":"1250"}'
 print(rangeResponse(data))
+print(findNrst(52.3124008, -48.1922503))

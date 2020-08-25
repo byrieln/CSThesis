@@ -1,4 +1,19 @@
-import mysql.connector
+a = 0.5
+
+print((sqrt(a/(1-a)))==(sqrt(a)))
+
+
+
+
+
+
+
+
+
+
+
+
+"""import mysql.connector
 
 from math import sin, cos, sqrt, atan2, radians
 
@@ -41,3 +56,5 @@ c = 2  * atan2(sqrt(a), sqrt(1-a))
 distance = radius * c
 
 print("Src: {}, Dest: {}, Distance: {}".format(rt[0][0], rt[1][0], distance))
+
+"""

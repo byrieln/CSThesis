@@ -15,10 +15,11 @@
 			<input type="text" id="arr" name="arr">
 			<label for="range">Max. Range (nmi)</label>
 			<input type="number" id="range" name="range" min="0">
-			<!--input type="submit" onclick= "submission()" value="Submit"-->
+			<label for="rwy">Min. Runway (ft)</label>
+			<input type="number" id="rwy" name="rwy" min="0" value="5000">
 			
 		</form>
-		<button id="submission" onclick="submission()">Hehehe</button>
+		<button id="submission" onclick="submission()">Search</button>
 	</body>
 	
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -31,7 +32,8 @@
 			const data = {
 				"dep": form[0].value,
 				"arr": form[1].value,
-				"range": form[2].value
+				"range": form[2].value,
+				"rwy":form[3].value
 			};
 			const param = {
 				headers: {

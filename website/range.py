@@ -78,7 +78,7 @@ def findNext(route, stop, arr, maxRange, rwy):
             continue
         if len(route) > 1 and distance(i[4], route[-2]) < distance(route[-1], route[-2]):
             continue
-        print("next:", i[4], distance(i[4], route[-1]))
+        #print("next:", i[4], distance(i[4], route[-1]))
         return findNext(route + [i[4]], i[4], arr, maxRange, rwy)
     
     return "No Route"
@@ -94,12 +94,12 @@ def optimize(route, maxRange):
     for i in range(len(route)):
         for j in range(i+2, len(route)):
             #print(i,j)
-            print(i, j, distance(route[i], route[j]), maxRange)
+            #print(i, j, distance(route[i], route[j]), maxRange)
             if j < len(route) and distance(route[i], route[j]) < int(maxRange):
-                print("old", route)
+                #print("old", route)
                 return optimize(route[:i+1]+route[j:], maxRange)
                 j = i + 2
-                print("new", route)
+                #print("new", route)
     return route
     
 """

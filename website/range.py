@@ -33,34 +33,90 @@ def rangeResponse(data):
         #airports.append(findNrst(i[0], i[1], data['rwy']))
     
     #return mids
-    
-    return findNext([data['dep']], data['dep'], data['arr'], data['range'], data['rwy'])
+    route = findNext([data['dep']], data['dep'], data['arr'], data['range'], data['rwy'])
+    #print(route)
+    return optimize(route, data['range'])
 
 def findNext(route, stop, arr, maxRange, rwy):
+    #print(route)
+    if distance(stop, arr) < int(maxRange):
+        return route + [arr]
     stopCoords = coords(stop)
     lat = stopCoords[0]
     long = stopCoords[1]
     calc = "(3443.9 * 2  * atan((sqrt(pow(sin((radians(a_lat) - radians({}))/2),2) + cos(radians({})) * cos(radians(a_lat)) * pow(sin((radians(a_long) - radians({}))/2),2)))/(sqrt(1-(pow(sin((radians(a_lat) - radians({}))/2),2) + cos(radians({})) * cos(radians(a_lat)) * pow(sin((radians(a_long) - radians({}))/2),2))))))".format(lat, lat, long, lat, lat, long)
-    query = "select *, round({}) as 'Distance' from airport where a_rwy is not null AND a_rwy > {} HAVING Distance < {} ORDER BY Distance DESC LIMIT 100;".format(calc, rwy, maxRange)
+    query = "select *, round({}) as 'Distance' from airport where a_rwy is not null AND a_rwy > {} HAVING Distance < {} ORDER BY Distance DESC LIMIT 50;".format(calc, rwy, maxRange)
     cursor.execute(query)
     airports = list(cursor.fetchall())
     best = [-1, stop, 999999]
     for i in range(len(airports)):
+        airports[i] = list(airports[i])
+        airports[i].append(distance(airports[i][4], arr))
+    #print(airports)
+    """for i in range(len(airports)):
         dist = distance(airports[i][4], arr)
-        if  dist < best[2]:
+        #dist = [distance(airports[i][4], arr), distance(dep, route[-1])]
+        #print(best, i, airports[i][4], dist)
+        if  dist < best[2] and best[1] not in route:# and dist[0]:
+            
             best = [i, airports[i][4], dist]
-        print(best)
     
     route.append(best[1])
+    
+    #print(route)
     
     if best[2] < int(maxRange):
         route.append(arr)
         return route
+    """
+    airports.sort(key=sortKey)
+    routeLength = distance(route[-1], route[0])
+    for i in airports:
+        #if len(route) > 1:
+        #    print(len(route), distance(i[4], route[-2]), distance(route[-1], route[-2]))
+        if i[4] in route:
+            continue
+        if len(route) > 1 and distance(i[4], route[-2]) < distance(route[-1], route[-2]):
+            continue
+        print("next:", i[4], distance(i[4], route[-1]))
+        return findNext(route + [i[4]], i[4], arr, maxRange, rwy)
     
-    return findNext(route, best[1], arr, maxRange, rwy)
+    return "No Route"
     
+def sortKey(airport):
+    #print(airport[-1])
+    return airport[-1]
     
+def optimize(route, maxRange):
+    if len(route) < 3:
+        return route
     
+    for i in range(len(route)):
+        for j in range(i+2, len(route)):
+            #print(i,j)
+            print(i, j, distance(route[i], route[j]), maxRange)
+            if j < len(route) and distance(route[i], route[j]) < int(maxRange):
+                print("old", route)
+                return optimize(route[:i+1]+route[j:], maxRange)
+                j = i + 2
+                print("new", route)
+    return route
+    
+"""
+def optimize(route, maxRange):
+    if len(route) < 3:
+        return route
+    
+    for i in range(len(route)):
+        for j in range(i+2, len(route)):
+            #print(i,j)
+            if j < len(route) and distance(route[i], route[j]) < int(maxRange):
+                #print("old", route)
+                route = route[:i+1]+route[j:]
+                j = i + 2
+                #print("new", route)
+    return route"""
+
 def findNrst(lat, long, rwy):
     radius = 3443.9 #The radius of the earth in nautical miles
     calc = "(3443.9 * 2  * atan((sqrt(pow(sin((radians(a_lat) - radians({}))/2),2) + cos(radians({})) * cos(radians(a_lat)) * pow(sin((radians(a_long) - radians({}))/2),2)))/(sqrt(1-(pow(sin((radians(a_lat) - radians({}))/2),2) + cos(radians({})) * cos(radians(a_lat)) * pow(sin((radians(a_long) - radians({}))/2),2))))))".format(lat, lat, long, lat, lat, long)
@@ -131,6 +187,14 @@ def codeType(code):
     else:
         return "error"
 
-data = b'{"dep":"klax","arr":"yssy","range":"2000", "rwy": "7000"}'
+data = b'{"dep":"klax","arr":"phnl","range":"1300", "rwy": "3000"}'
+print(rangeResponse(data))
+data = b'{"dep":"uuee","arr":"ksfo","range":"1250", "rwy": "3000"}'
+print(rangeResponse(data))
+data = b'{"dep":"wsss","arr":"eddf","range":"1300", "rwy": "3000"}'
+print(rangeResponse(data))
+data = b'{"dep":"bikf","arr":"egyp","range":"1300", "rwy": "3000"}'
+print(rangeResponse(data))
+data = b'{"dep":"bikf","arr":"fact","range":"1300", "rwy": "3000"}'
 print(rangeResponse(data))
 #print(findNrst(52.3124008, -48.1922503, 3000))

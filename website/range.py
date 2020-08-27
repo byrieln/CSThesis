@@ -1,6 +1,7 @@
-from json import loads
+from json import loads, dumps
 import mysql.connector
 from math import sin, cos, sqrt, atan2, radians, ceil, degrees
+from time import time
 
 db = mysql.connector.connect(database='routegen', user='routegen', password='easyPw123', host='127.0.0.1')
 cursor = db.cursor()
@@ -34,48 +35,51 @@ def rangeResponse(data):
     
     #return mids
     route = findNext([data['dep']], data['dep'], data['arr'], data['range'], data['rwy'])
-    #print(route)
-    return optimize(route, data['range'])
+    print(route)
+    if type(route) == list:
+        route = optimize(route, data['range'], data['rwy'])
+        response = {
+            'route':route,
+            'lengths':routeLengths(route)
+        }
+    
+    else:
+        response = {
+            'route':route,
+            'lengths':[]
+        }
+    return dumps(response)
+    
 
 def findNext(route, stop, arr, maxRange, rwy):
     #print(route)
+    #print('findNext before if', stop, codeType(stop))
     if distance(stop, arr) < int(maxRange):
         return route + [arr]
     stopCoords = coords(stop)
     lat = stopCoords[0]
     long = stopCoords[1]
     calc = "(3443.9 * 2  * atan((sqrt(pow(sin((radians(a_lat) - radians({}))/2),2) + cos(radians({})) * cos(radians(a_lat)) * pow(sin((radians(a_long) - radians({}))/2),2)))/(sqrt(1-(pow(sin((radians(a_lat) - radians({}))/2),2) + cos(radians({})) * cos(radians(a_lat)) * pow(sin((radians(a_long) - radians({}))/2),2))))))".format(lat, lat, long, lat, lat, long)
-    query = "select *, round({}) as 'Distance' from airport where a_rwy is not null AND a_rwy > {} HAVING Distance < {} ORDER BY Distance DESC LIMIT 50;".format(calc, rwy, maxRange)
+    query = "select *, round({}) as 'Distance' from airport where a_rwy is not null AND a_rwy > {} HAVING Distance < {} and Distance > {} ORDER BY Distance ;".format(calc, rwy, maxRange, int(maxRange)/2)
     cursor.execute(query)
     airports = list(cursor.fetchall())
+    #print(stop, len(airports), codeType(stop))
     best = [-1, stop, 999999]
     for i in range(len(airports)):
         airports[i] = list(airports[i])
+        #print("findNext a", airports[i][4], arr)
         airports[i].append(distance(airports[i][4], arr))
     #print(airports)
-    """for i in range(len(airports)):
-        dist = distance(airports[i][4], arr)
-        #dist = [distance(airports[i][4], arr), distance(dep, route[-1])]
-        #print(best, i, airports[i][4], dist)
-        if  dist < best[2] and best[1] not in route:# and dist[0]:
-            
-            best = [i, airports[i][4], dist]
-    
-    route.append(best[1])
-    
-    #print(route)
-    
-    if best[2] < int(maxRange):
-        route.append(arr)
-        return route
-    """
     airports.sort(key=sortKey)
     routeLength = distance(route[-1], route[0])
+    #print('findNext top', route[-0], route[-1])
     for i in airports:
         #if len(route) > 1:
         #    print(len(route), distance(i[4], route[-2]), distance(route[-1], route[-2]))
+            #print('findNext', i[4], route[-2], route[-1])
         if i[4] in route:
             continue
+        
         if len(route) > 1 and distance(i[4], route[-2]) < distance(route[-1], route[-2]):
             continue
         #print("next:", i[4], distance(i[4], route[-1]))
@@ -87,7 +91,23 @@ def sortKey(airport):
     #print(airport[-1])
     return airport[-1]
     
-def optimize(route, maxRange):
+def optimize(route, maxRange,rwy):
+    """
+    Use optimization algorithms to return a more optimal route than generated
+    Use cut first, because it is quicker and removes airports that go against progress.
+    Gen works less efficiently when circles are in the route
+    """
+    print("Init:",route)
+    route = optimizeCut(route,maxRange)
+    print("Cut:", route)
+    route = optimizeGen(route,maxRange,rwy)
+    print("Gen:",route)
+    return route
+
+def optimizeCut(route, maxRange):
+    """
+    first optimization method: Find loops
+    """
     if len(route) < 3:
         return route
     
@@ -95,28 +115,40 @@ def optimize(route, maxRange):
         for j in range(i+2, len(route)):
             #print(i,j)
             #print(i, j, distance(route[i], route[j]), maxRange)
+            #print(route)
             if j < len(route) and distance(route[i], route[j]) < int(maxRange):
                 #print("old", route)
-                return optimize(route[:i+1]+route[j:], maxRange)
+                return optimizeCut(route[:i+1]+route[j:], maxRange)
                 j = i + 2
                 #print("new", route)
     return route
-    
-"""
-def optimize(route, maxRange):
-    if len(route) < 3:
-        return route
+
+def optimizeGen(route, maxRange, rwy):
+    """
+    second optimization method: Generate routes between stops to see if theyre shorter
+    """
+    #print("optimizing:",route)
+    dists = routeLengths(route)
     
     for i in range(len(route)):
-        for j in range(i+2, len(route)):
-            #print(i,j)
-            if j < len(route) and distance(route[i], route[j]) < int(maxRange):
-                #print("old", route)
-                route = route[:i+1]+route[j:]
-                j = i + 2
-                #print("new", route)
-    return route"""
+        for j in range(i+2, i+6):
+            if j >= len(route):
+                continue
+            newRt = findNext([route[i]], route[i], route[j], maxRange, rwy)
+            #print(newRt, route[i:j], sum(routeLengths(newRt)), sum(dists[i:j]),routeLengths(newRt), dists[i:j])
+            #print ("lengths:",sum(routeLengths(newRt)), sum(dists[i:j]))
+            if sum(routeLengths(newRt)) < sum(dists[i:j]):
+                #print("Must Opzimize!",newRt, route[i:j],"to",route[:i+1]+newRt[1:]+route[j+1:],route[:i+1],newRt[1:],route[j+1:])
+                return optimizeGen(route[:i+1]+newRt[1:]+route[j+1:], maxRange, rwy)
+    return route
 
+def routeLengths(route):
+    dists = []
+    for i in range(len(route)-1):
+        dists.append(distance(route[i], route[i+1]))
+    #print(dists)
+    return dists
+    
 def findNrst(lat, long, rwy):
     radius = 3443.9 #The radius of the earth in nautical miles
     calc = "(3443.9 * 2  * atan((sqrt(pow(sin((radians(a_lat) - radians({}))/2),2) + cos(radians({})) * cos(radians(a_lat)) * pow(sin((radians(a_long) - radians({}))/2),2)))/(sqrt(1-(pow(sin((radians(a_lat) - radians({}))/2),2) + cos(radians({})) * cos(radians(a_lat)) * pow(sin((radians(a_long) - radians({}))/2),2))))))".format(lat, lat, long, lat, lat, long)
@@ -138,7 +170,6 @@ def findMidpoints(dep, arr, legs):
     
     return points
 
-
 def coords(airport):
     query = "select a_lat, a_long from airport where a_{} = '{}';".format(codeType(airport), airport)
     cursor.execute(query)
@@ -157,7 +188,7 @@ def getAirportInfo(code):
 
 def distance(dep, arr):
     radius = 3443.9 #The radius of the earth in nautical miles
-    
+    #print('dist', dep, arr)
     src = coords(dep)
     dest = coords(arr)
     
@@ -177,24 +208,41 @@ def distance(dep, arr):
     #print("Src: {}, Dest: {}, Distance: {}, midpoint: {}, {}".format(getAirportInfo(dep)[0], getAirportInfo(arr)[0], int(distance), degrees((lata+latb)/2), degrees((longa+longb)/2)))
     return int(distance)
 
-
-
 def codeType(code):
     if len(code) == 4:
         return "icao"
     elif len(code) == 3:
         return "iata"
     else:
-        return "error"
+        print(code, "error")
+        return "name"
 
+current = time()
+data = b'{"dep":"kjfk","arr":"klga","range":"1250", "rwy": "5000"}'
+print(rangeResponse(data), time()-current)
+"""
+current = time()
 data = b'{"dep":"klax","arr":"phnl","range":"1300", "rwy": "3000"}'
-print(rangeResponse(data))
+print(rangeResponse(data), time()-current)
+current = time()
 data = b'{"dep":"uuee","arr":"ksfo","range":"1250", "rwy": "3000"}'
-print(rangeResponse(data))
+print(rangeResponse(data), time()-current)
+current = time()
 data = b'{"dep":"wsss","arr":"eddf","range":"1300", "rwy": "3000"}'
-print(rangeResponse(data))
+print(rangeResponse(data), time()-current)
+current = time()
 data = b'{"dep":"bikf","arr":"egyp","range":"1300", "rwy": "3000"}'
-print(rangeResponse(data))
+print(rangeResponse(data), time()-current)
+current = time()
 data = b'{"dep":"bikf","arr":"fact","range":"1300", "rwy": "3000"}'
-print(rangeResponse(data))
+print(rangeResponse(data), time()-current)
+current = time()
+data = b'{"dep":"kewr","arr":"wsss","range":"1300", "rwy": "3000"}'
+print(rangeResponse(data), time()-current)
+current = time()
+data = b'{"dep":"klga","arr":"ypph","range":"1300", "rwy": "500"}'
+print(rangeResponse(data), time()-current)
+current = time()
+data = b'{"dep":"kmia","arr":"lirf","range":"600", "rwy": "500"}'
+print(rangeResponse(data), time()-current)"""
 #print(findNrst(52.3124008, -48.1922503, 3000))

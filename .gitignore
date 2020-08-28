@@ -1,2 +1,4 @@
 website/venv/*
 data/OnTimePerformance/*.zip
+data/OnTimePerformance/*.csv
+data/OnTimePerformance/readme.html

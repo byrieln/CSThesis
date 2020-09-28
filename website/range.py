@@ -218,12 +218,13 @@ def codeType(code):
         return "name"
 
 current = time()
-data = b'{"dep":"kjfk","arr":"klga","range":"1250", "rwy": "5000"}'
+data = b'{"dep":"uhmm","arr":"uhma","range":"375", "rwy": "5000"}'
 print(rangeResponse(data), time()-current)
 """
 current = time()
 data = b'{"dep":"klax","arr":"phnl","range":"1300", "rwy": "3000"}'
 print(rangeResponse(data), time()-current)
+
 current = time()
 data = b'{"dep":"uuee","arr":"ksfo","range":"1250", "rwy": "3000"}'
 print(rangeResponse(data), time()-current)

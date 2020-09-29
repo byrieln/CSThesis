@@ -52,6 +52,11 @@ def rangeResponse(data):
     
 
 def findNext(route, stop, arr, maxRange, rwy):
+    """
+    Takes the route so far as input, the current leg departure airport, the desired destination, and airplane range and runway length
+    Recursively generates a route from stop to arrival
+    returns route with the next stop recursively added to the end
+    """
     #print(route)
     #print('findNext before if', stop, codeType(stop))
     if distance(stop, arr) < int(maxRange):
@@ -88,7 +93,9 @@ def findNext(route, stop, arr, maxRange, rwy):
     return "No Route"
     
 def sortKey(airport):
-    #print(airport[-1])
+    """
+    Used as the key in a list.sort()
+    """
     return airport[-1]
     
 def optimize(route, maxRange,rwy):
@@ -100,7 +107,8 @@ def optimize(route, maxRange,rwy):
     print("Init:",route)
     route = optimizeCut(route,maxRange)
     print("Cut:", route)
-    route = optimizeGen(route,maxRange,rwy)
+    route = optimizeGen(route[::-1],maxRange,rwy)[::-1]
+    
     print("Gen:",route)
     return route
 
@@ -128,15 +136,23 @@ def optimizeGen(route, maxRange, rwy):
     second optimization method: Generate routes between stops to see if theyre shorter
     """
     #print("optimizing:",route)
+    route
     dists = routeLengths(route)
     
     for i in range(len(route)):
-        for j in range(i+2, i+6):
+        for j in range(i+2, i+5):
+            """
+            It is pointless to generate a new route between two airports next to each other in the list
+            +5 is given because generation takes a long time and it limits how many generation events happen
+            """
             if j >= len(route):
                 continue
             newRt = findNext([route[i]], route[i], route[j], maxRange, rwy)
             #print(newRt, route[i:j], sum(routeLengths(newRt)), sum(dists[i:j]),routeLengths(newRt), dists[i:j])
             #print ("lengths:",sum(routeLengths(newRt)), sum(dists[i:j]))
+            if newRt == "No Route":
+                #print("F"+newRt+"F")
+                continue
             if sum(routeLengths(newRt)) < sum(dists[i:j]):
                 #print("Must Opzimize!",newRt, route[i:j],"to",route[:i+1]+newRt[1:]+route[j+1:],route[:i+1],newRt[1:],route[j+1:])
                 return optimizeGen(route[:i+1]+newRt[1:]+route[j+1:], maxRange, rwy)
@@ -145,6 +161,7 @@ def optimizeGen(route, maxRange, rwy):
 def routeLengths(route):
     dists = []
     for i in range(len(route)-1):
+        #print('routeLengths',route[i],route[i+1])
         dists.append(distance(route[i], route[i+1]))
     #print(dists)
     return dists
@@ -174,7 +191,6 @@ def coords(airport):
     query = "select a_lat, a_long from airport where a_{} = '{}';".format(codeType(airport), airport)
     cursor.execute(query)
     result = cursor.fetchall()
-    
     return [result[0][0], result[0][1]]
 
 def getAirportInfo(code):
@@ -217,13 +233,13 @@ def codeType(code):
         print(code, "error")
         return "name"
 
-current = time()
-data = b'{"dep":"uhmm","arr":"uhma","range":"375", "rwy": "5000"}'
+"""current = time()
+data = b'{"dep":"uhmm","arr":"uhma","range":"900", "rwy": "5000"}'
 print(rangeResponse(data), time()-current)
-"""
-current = time()
-data = b'{"dep":"klax","arr":"phnl","range":"1300", "rwy": "3000"}'
-print(rangeResponse(data), time()-current)
+
+
+
+
 
 current = time()
 data = b'{"dep":"uuee","arr":"ksfo","range":"1250", "rwy": "3000"}'
@@ -237,13 +253,19 @@ print(rangeResponse(data), time()-current)
 current = time()
 data = b'{"dep":"bikf","arr":"fact","range":"1300", "rwy": "3000"}'
 print(rangeResponse(data), time()-current)
+"""
 current = time()
 data = b'{"dep":"kewr","arr":"wsss","range":"1300", "rwy": "3000"}'
 print(rangeResponse(data), time()-current)
+
 current = time()
 data = b'{"dep":"klga","arr":"ypph","range":"1300", "rwy": "500"}'
 print(rangeResponse(data), time()-current)
+
 current = time()
 data = b'{"dep":"kmia","arr":"lirf","range":"600", "rwy": "500"}'
-print(rangeResponse(data), time()-current)"""
-#print(findNrst(52.3124008, -48.1922503, 3000))
+print(rangeResponse(data), time()-current)
+current = time()
+data = b'{"dep":"klax","arr":"phnl","range":"1300", "rwy": "3000"}'
+print(rangeResponse(data), time()-current)
+

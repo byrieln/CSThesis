@@ -35,6 +35,8 @@
 				"range": form[2].value,
 				"rwy":form[3].value
 			};
+			
+			//create a POST request with the data
 			const param = {
 				headers: {
 					'Content-Type':'text/plain'
@@ -43,18 +45,25 @@
 				body:JSON.stringify(data)
 			}
 			console.log(data)
+			
+			//Send the POST request object to /range
 			fetch("/range", param)
 			.then(function(response) {
+				console.log("response");
 				return response.json();
 			}).then(function(body) {
 				redraw(body);
 			});
 		}
 		
+		//draw the responses
 		function redraw(data){
-			for(let i = 0; i < data.length; i++){
+			console.log("redraw");
+			console.log(data.route);
+			for(let i = 0; i < data.route.length; i++){
+				console.log("in the for");
 				console.log(i);
-				console.log(data[0]);
+				console.log(data.route[0]);
 			}
 		}
 	</script>

@@ -10,6 +10,11 @@ async function submission() {
 		console.log("Invalid data!");
 		return;
 	}
+	//NOTE FOR SEPTERMBER 30
+	//document.getElementById("output").style.visibility
+	//element.children[].checked
+	//element.children[].getAttribute('name')
+	
 	//create a POST request with the data
 	const param = {
 		headers: {
@@ -19,9 +24,7 @@ async function submission() {
 		body:JSON.stringify(data)
 	};
 	console.log(data);
-	document.getElementById("output").style.visibility = "hidden";
-	document.getElementById("noResult").style.visibility = "hidden";
-	document.getElementById("loading").style.visibility = "visible";
+	showLoading();
 	//Send the POST request object to /range
 	fetch("/range", param)
 	.then(function(response) {
@@ -31,15 +34,36 @@ async function submission() {
 	});
 }
 
+function showLoading(){
+	//show the Loading element and hide the others
+	document.getElementById("output").style.visibility = "hidden";
+	document.getElementById("noResult").style.visibility = "hidden";
+	document.getElementById("loading").style.visibility = "visible";
+}
+function showOutput(){
+	//show the Output element and hide the others
+	document.getElementById("output").style.visibility = "visible";
+	document.getElementById("noResult").style.visibility = "hidden";
+	document.getElementById("loading").style.visibility = "hidden";
+}
+function showNoResult(){
+	//show the No Result element and hide the others
+	document.getElementById("output").style.visibility = "hidden";
+	document.getElementById("noResult").style.visibility = "visible";
+	document.getElementById("loading").style.visibility = "hidden";
+}
+
 //draw the responses
 function redraw(data){
+	/**
+	Redraw the response data
+	**/
 	//get variables for the sidebar and result
 	var sidebar = document.getElementById("sidebar");
 	var result = document.getElementById("result");
 	
 	if (data.route=="No Route"){
-		document.getElementById("noResult").style.visibility = "visible";
-		document.getElementById("loading").style.visibility = "hidden";
+		showNoResult();
 		return;
 	}
 	
@@ -50,30 +74,38 @@ function redraw(data){
 	console.log("redraw");
 	console.log(data.route);
 	
+	//made a sidebar header
 	var add = document.createElement("h4");
 	add.innerHTML = "Airports:";
 	sidebar.appendChild(add);
-	//sidebar.appendChild(document.createElement("br"));
+	
+	//make a table header in the result
 	var table = document.createElement("table");
 	add = document.createElement("tr");
 	popRow(add, ["Departure","Arrival","Distance","Weather at Destination"]);
 	add.setAttribute("id","tableHead");
 	table.appendChild(add);
+	
+	//populate data
 	for(let i = 0; i < data.route.length-1; i++){
 		//add data to sidebar
 		if (i != 0){
 			addSidebar(data.route[i], sidebar);
 		}
+		
 		//add data to route
 		add = document.createElement("tr");
 		popRow(add, [data.route[i], data.route[i+1], data.lengths[i], data.weather[i]]);
 		add.setAttribute("id", "tableRow");
 		table.appendChild(add);
 	}
+	
+	//add an update button the the sidebar
+	
+	//add the table to the result
 	result.appendChild(table);
 	
-	document.getElementById("loading").style.visibility = "hidden";
-	document.getElementById("output").style.visibility = "visible";
+	showOutput();
 }
 
 function addSidebar(stop, sidebar) {

@@ -1,0 +1,98 @@
+#input {
+	position: relative;
+	top: 10px;
+	height: 60px;
+	width: 100%;
+}
+
+#update {
+	display:inline;
+}
+
+#submission {
+	display: inline;
+}
+
+#loading {
+	visibility: hidden;
+}
+
+#noResult {
+	visibility: hidden;
+}
+
+#output {
+	visibility: hidden;
+	position: relative;
+	width: 100%;
+	height: 800px;
+	border: 3px solid #555555;
+}
+
+#sidebar {
+	visibility: inherit;
+	position: absolute;
+	top: 0px;
+	left: 0;
+	width: 6em;
+	height: 100%;
+	border: 3px solid #AAAAAA;
+}
+
+#sidebar h4 {
+	margin-top: 0.4em;
+	margin-bottom: 0.4em;
+	font-weight:bold;
+}
+
+#sidebar input{
+	margin-left: 1em;
+}
+
+#result{
+	visibility: inherit;
+	position: absolute;
+	top: 0px;
+	left: 8em;
+	width: 66%;
+	height:100%;
+	border: 3px solid #BBBBBB;
+}
+
+#result table{
+	width: 100%;	
+	border: 3px solid #222222;
+}
+#result table tr th{
+	border: 1px solid #333333;
+}
+
+#tableHead {
+	font-size: 18px;
+}
+
+#tableRow th {
+	font-weight: lighter;
+}
+
+#Departure {
+	width: 6em;
+}
+
+#Arrival {
+	width: 6em;
+}
+
+#Distance {
+	width: 6em;
+}
+
+#weather {
+	visibility: inherit;
+	position: absolute;
+	top: 0px;
+	right: 0;
+	width: 25%;
+	height: 100%;
+	border: 3px solid #CCCCCC;
+}

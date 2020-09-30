@@ -2,6 +2,7 @@ from json import loads, dumps
 import mysql.connector
 from math import sin, cos, sqrt, atan2, radians, ceil, degrees
 from time import time
+from requests import get
 
 db = mysql.connector.connect(database='routegen', user='routegen', password='easyPw123', host='127.0.0.1')
 cursor = db.cursor()
@@ -13,11 +14,12 @@ def rangeResponse(data):
     """
     route = {}
     data = loads(data)
-    dist = distance(data['dep'], data['arr'])
-   
-    legs = ceil(dist/int(data['range']))
+    data['dep'] = data['dep'].upper()
+    data['arr'] = data['arr'].upper()
     
-    if legs == 1:
+    dist = distance(data['dep'], data['arr'])
+    
+    if dist < int(data['range']):
         route = {
             'legs': 1,
             '0':{
@@ -26,30 +28,37 @@ def rangeResponse(data):
                 'dist':dist
             }
         }
-    
-    #mids = findMidpoints(data['dep'], data['arr'], legs)
-    
-    #airports = []
-    #for i in mids:
-        #airports.append(findNrst(i[0], i[1], data['rwy']))
-    
-    #return mids
     route = findNext([data['dep']], data['dep'], data['arr'], data['range'], data['rwy'])
     print(route)
     if type(route) == list:
         route = optimize(route, data['range'], data['rwy'])
         response = {
             'route':route,
-            'lengths':routeLengths(route)
+            'lengths':routeLengths(route),
+            'weather': getWeather(route[1:])
         }
     
     else:
         response = {
             'route':route,
-            'lengths':[]
+            'lengths':[], 
         }
     return dumps(response)
     
+def getWeather(route):
+    """
+    Gets METAR reports of each destination in route
+    """
+    weather = []
+    for i in route:
+        url = 'https://aviationweather.gov/metar/data?ids={}&format=raw&date=&hours=0'.format(i)
+        data = get(url).content.decode()
+        data = data[data.find('<code>')+6: data.find('</code>')]
+        if (len(data) > 500):
+            weather.append("No METAR found")
+        else:
+            weather.append(data)
+    return weather
 
 def findNext(route, stop, arr, maxRange, rwy):
     """
@@ -233,17 +242,11 @@ def codeType(code):
         print(code, "error")
         return "name"
 
-"""current = time()
-data = b'{"dep":"uhmm","arr":"uhma","range":"900", "rwy": "5000"}'
-print(rangeResponse(data), time()-current)
-
-
-
-
-
+"""
 current = time()
 data = b'{"dep":"uuee","arr":"ksfo","range":"1250", "rwy": "3000"}'
 print(rangeResponse(data), time()-current)
+
 current = time()
 data = b'{"dep":"wsss","arr":"eddf","range":"1300", "rwy": "3000"}'
 print(rangeResponse(data), time()-current)

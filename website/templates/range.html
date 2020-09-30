@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lange="en-US">
+	<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='range.css')}}">
 	<head>
 		<meta charset="UTF-8">
 		<meta name="viewport" content ="width=device-width, initial-scale=1.0">
@@ -8,63 +9,38 @@
 	<body>
 		<p>Route Generator by Range</p>
 		<div id="navbar"></div>
-		<form id="update">
-			<label for="dep">Departure:</label>
-			<input type="text" id="dep" name="dep">
-			<label for="arr">Arrival:</label>
-			<input type="text" id="arr" name="arr">
-			<label for="range">Max. Range (nmi):</label>
-			<input type="number" id="range" name="range" min="0">
-			<label for="rwy">Min. Runway (ft):</label>
-			<input type="number" id="rwy" name="rwy" min="0" value="5000">
-			
-		</form>
-		<button id="submission" onclick="submission()">Search</button>
+		<div id="input">
+			<form id="update">
+				<label for="dep">Departure:</label>
+				<input type="text" id="dep" name="dep">
+				<label for="arr">Arrival:</label>
+				<input type="text" id="arr" name="arr">
+				<label for="range">Max. Range (nmi):</label>
+				<input type="number" id="range" name="range" min="0" value="2000">
+				<label for="rwy">Min. Runway (ft):</label>
+				<input type="number" id="rwy" name="rwy" min="0" value="5000">
+			</form>
+			<button id="submission" onclick="submission()">Search</button>
+			<p id="loading">Loading results...</p>
+			<p id="noResult">No results found, try again. </p>
+		</div>
+		<div id="output">
+			<div id="sidebar">
+				Text Side
+				<button>Test</button>
+			</div>
+			<div id="result">
+				Text result
+			</div>
+			<div id="weather">
+				Text weather
+			</div>
+		</div>
 	</body>
 	
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 	<script>
 		$('#navbar').load('navbar.html');
 	</script>
-	<script>
-		async function submission() {
-			const form = document.getElementById("update");
-			const data = {
-				"dep": form[0].value,
-				"arr": form[1].value,
-				"range": form[2].value,
-				"rwy":form[3].value
-			};
-			
-			//create a POST request with the data
-			const param = {
-				headers: {
-					'Content-Type':'text/plain'
-				},
-				method:"POST",
-				body:JSON.stringify(data)
-			}
-			console.log(data)
-			
-			//Send the POST request object to /range
-			fetch("/range", param)
-			.then(function(response) {
-				console.log("response");
-				return response.json();
-			}).then(function(body) {
-				redraw(body);
-			});
-		}
-		
-		//draw the responses
-		function redraw(data){
-			console.log("redraw");
-			console.log(data.route);
-			for(let i = 0; i < data.route.length; i++){
-				console.log("in the for");
-				console.log(i);
-				console.log(data.route[0]);
-			}
-		}
-	</script>
+	<script src="{{url_for('static', filename='scripts/range.js')}}">	</script>
 </html>

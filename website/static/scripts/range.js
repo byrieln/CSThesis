@@ -25,7 +25,6 @@ async function submission() {
 	//Send the POST request object to /range
 	fetch("/range", param)
 	.then(function(response) {
-		console.log("response");
 		return response.json();
 	}).then(function(body) {
 		redraw(body);

@@ -1,19 +1,51 @@
+var departure = "";
+var arrival = "";
+
+$(document).ready(function() {
+	$('#update input').change(function(){
+		document.getElementById("submission").innerHTML = "Search";
+		console.log("Update update");
+	});
+});
+
+
+
+
 async function submission() {
 	const form = document.getElementById("update");
 	const data = {
 		"dep": form[0].value,
 		"arr": form[1].value,
 		"range": form[2].value,
-		"rwy":form[3].value
+		"rwy":form[3].value,
+		"skipAirports":[]
 	};
 	if (data.dep == "" || data.arr == "" || data.range=="" || data.rwy==""){
 		console.log("Invalid data!");
 		return;
 	}
-	//NOTE FOR SEPTERMBER 30
-	//document.getElementById("output").style.visibility
-	//element.children[].checked
-	//element.children[].getAttribute('name')
+
+	
+	//if the departure and arrival airports are the same as the previous result, send a list of airport to skip
+	var result = document.getElementById("output");
+	//console.log(result.style.visibility);
+	if (result.style.visibility == "visible"){
+		//console.log(departure + " " + data.dep + " " + arrival + " " + data.arr);
+		if (departure == data.dep && arrival == data.arr){
+			result = document.getElementById("sidebar");
+			//console.log("result " + result);
+			for (let i = 0; i < result.children.length; i++){
+				//console.log(result.children[i].tagName);
+				if (result.children[i].tagName == "INPUT" && result.children[i].checked == false){
+					data.skipAirports.push(result.children[i].getAttribute("name"));
+					console.log("skip " + result.children[i].getAttribute("name"));
+				}
+			}
+		}
+	}
+	departure = data.dep;
+	arrival = data.arr;
+	
 	
 	//create a POST request with the data
 	const param = {
@@ -33,6 +65,8 @@ async function submission() {
 		redraw(body);
 	});
 }
+
+
 
 function showLoading(){
 	//show the Loading element and hide the others
@@ -87,11 +121,21 @@ function redraw(data){
 	table.appendChild(add);
 	
 	//populate data
+	for(let i = 0; i < data.skip.length; i++){
+		addSidebar(data.skip[i], sidebar, false);
+	}
+	
+	
 	for(let i = 0; i < data.route.length-1; i++){
 		//add data to sidebar
 		if (i != 0){
-			addSidebar(data.route[i], sidebar);
+			addSidebar(data.route[i], sidebar, true);
 		}
+		
+		//add a jquery listener that triggers the function any time a sidebar checkbox is clicked
+		$(".sidebarAirport").on("click", function(){
+			document.getElementById("submission").innerHTML = "Update";
+		});
 		
 		//add data to route
 		add = document.createElement("tr");
@@ -108,13 +152,14 @@ function redraw(data){
 	showOutput();
 }
 
-function addSidebar(stop, sidebar) {
+function addSidebar(stop, sidebar, checked) {
 	//add a checkbox to the sidebar
 	var check = document.createElement("input");
 	check.setAttribute("type","checkbox");
 	check.setAttribute("name",stop);
 	check.setAttribute("value",stop);
-	check.checked=true;
+	check.setAttribute("class","sidebarAirport");
+	check.checked=checked;
 	sidebar.appendChild(check);
 	
 	//add a label to the checkbox

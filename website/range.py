@@ -25,23 +25,27 @@ def rangeResponse(data):
             '0':{
                 'dep':data['dep'],
                 'arr':data['arr'],
-                'dist':dist
+                'dist':dist,
+                'skip':data['skipAirports']
             }
         }
-    route = findNext([data['dep']], data['dep'], data['arr'], data['range'], data['rwy'])
+    route = findNext([data['dep']], data['dep'], data['arr'], data['range'], data['rwy'], data['skipAirports'])
     print(route)
     if type(route) == list:
-        route = optimize(route, data['range'], data['rwy'])
+        route = optimize(route, data['range'], data['rwy'], data['skipAirports'])
         response = {
             'route':route,
             'lengths':routeLengths(route),
-            'weather': getWeather(route[1:])
+            'weather': getWeather(route[1:]),
+            'skip': data['skipAirports']
         }
     
     else:
         response = {
             'route':route,
-            'lengths':[], 
+            'lengths':[],
+            'weather': getWeather(route[1:]),
+            'skip': data['skipAirports']
         }
     return dumps(response)
     
@@ -60,7 +64,7 @@ def getWeather(route):
             weather.append(data)
     return weather
 
-def findNext(route, stop, arr, maxRange, rwy):
+def findNext(route, stop, arr, maxRange, rwy, skip):
     """
     Takes the route so far as input, the current leg departure airport, the desired destination, and airplane range and runway length
     Recursively generates a route from stop to arrival
@@ -91,13 +95,13 @@ def findNext(route, stop, arr, maxRange, rwy):
         #if len(route) > 1:
         #    print(len(route), distance(i[4], route[-2]), distance(route[-1], route[-2]))
             #print('findNext', i[4], route[-2], route[-1])
-        if i[4] in route:
+        if i[4] in route or i[4] in skip:
             continue
         
         if len(route) > 1 and distance(i[4], route[-2]) < distance(route[-1], route[-2]):
             continue
         #print("next:", i[4], distance(i[4], route[-1]))
-        return findNext(route + [i[4]], i[4], arr, maxRange, rwy)
+        return findNext(route + [i[4]], i[4], arr, maxRange, rwy,skip)
     
     return "No Route"
     
@@ -107,7 +111,7 @@ def sortKey(airport):
     """
     return airport[-1]
     
-def optimize(route, maxRange,rwy):
+def optimize(route, maxRange,rwy,skip):
     """
     Use optimization algorithms to return a more optimal route than generated
     Use cut first, because it is quicker and removes airports that go against progress.
@@ -116,7 +120,7 @@ def optimize(route, maxRange,rwy):
     print("Init:",route)
     route = optimizeCut(route,maxRange)
     print("Cut:", route)
-    route = optimizeGen(route[::-1],maxRange,rwy)[::-1]
+    route = optimizeGen(route[::-1],maxRange,rwy,skip)[::-1]
     
     print("Gen:",route)
     return route
@@ -140,7 +144,7 @@ def optimizeCut(route, maxRange):
                 #print("new", route)
     return route
 
-def optimizeGen(route, maxRange, rwy):
+def optimizeGen(route, maxRange, rwy, skip):
     """
     second optimization method: Generate routes between stops to see if theyre shorter
     """
@@ -156,7 +160,7 @@ def optimizeGen(route, maxRange, rwy):
             """
             if j >= len(route):
                 continue
-            newRt = findNext([route[i]], route[i], route[j], maxRange, rwy)
+            newRt = findNext([route[i]], route[i], route[j], maxRange, rwy, skip)
             #print(newRt, route[i:j], sum(routeLengths(newRt)), sum(dists[i:j]),routeLengths(newRt), dists[i:j])
             #print ("lengths:",sum(routeLengths(newRt)), sum(dists[i:j]))
             if newRt == "No Route":
@@ -164,7 +168,7 @@ def optimizeGen(route, maxRange, rwy):
                 continue
             if sum(routeLengths(newRt)) < sum(dists[i:j]):
                 #print("Must Opzimize!",newRt, route[i:j],"to",route[:i+1]+newRt[1:]+route[j+1:],route[:i+1],newRt[1:],route[j+1:])
-                return optimizeGen(route[:i+1]+newRt[1:]+route[j+1:], maxRange, rwy)
+                return optimizeGen(route[:i+1]+newRt[1:]+route[j+1:], maxRange, rwy, skip)
     return route
 
 def routeLengths(route):

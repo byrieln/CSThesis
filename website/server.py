@@ -1,12 +1,6 @@
-from flask import Flask
-from flask import request
-from flask import render_template
-from flask import redirect
-from flask import url_for
-from flask import make_response
-from flask import abort
-from flask import send_file
+from flask import Flask, request, render_template, redirect, url_for, make_response, abort, send_file
 from range import rangeResponse
+from route import routeResponse, getFleet
 app = Flask(__name__)
 
 import mysql.connector
@@ -39,6 +33,19 @@ def rangeInput():
     #rangeResponse(request.data)
     #return {"hi":"hi"}
     return rangeResponse(request.data)
+    
+@app.route('/route.html')
+def route():
+    return render_template('route.html')
+
+@app.route('/route', methods=['POST'])
+def routeInput():
+    print(request.data)
+    return routeResponse(request.data)
+
+@app.route('/fleet', methods=['POST'])
+def fleet():
+    return getFleet()
 
 if __name__ == "__main__":
     app.run()

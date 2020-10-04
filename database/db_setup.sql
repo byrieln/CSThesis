@@ -32,3 +32,12 @@ create table if not exists plane(
     primary key(p_icao, p_iata)
 );
 
+create table if not exists route(
+	routeID int primary key,
+	r_airline char(3),
+    r_dep char(4),
+    r_arr char(4),
+    r_plane char(3),
+    r_dist int
+);
+

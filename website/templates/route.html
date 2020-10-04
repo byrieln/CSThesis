@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lange="en-US">
+	<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='route.css')}}">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content ="width=device-width, initial-scale=1.0">
+		
+	</head>
+	<body>
+		<p>Route Generator by Airline Routes</p>
+		<div id="navbar"></div>
+		<div id="input">
+			<form id="update">
+				<label for="dep">Departure:</label>
+				<input type="text" id="dep" name="dep">
+				<label for="arr">Arrival:</label>
+				<input type="text" id="arr" name="arr">
+				<div id="dropdown">
+					<button onclick="dropButton()" class="dropButton">Fleet (0 selected):</button>
+					<div id="fleetDropdown" class="fleetDropdown-content">
+						<input type="text" placeholder="Search..." id="fleetInput" onkeyup="dropdownFilter()">
+					</div>
+				</div>
+			</form>
+			<button id="submission" onclick="submission()">Search</button>
+			<p id="loading">Loading results...</p>
+			<p id="noResult">No results found, try again. </p>
+		</div>
+		<div id="output">
+			<div id="sidebar">
+				Text Side
+				<button>Test</button>
+			</div>
+			<div id="result">
+				Text result
+			</div>
+			<div id="weather">
+				Text weather
+			</div>
+		</div>
+	</body>
+	
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script>
+		$('#navbar').load('navbar.html');
+	</script>
+	<script src="{{url_for('static', filename='scripts/route.js')}}">	</script>
+</html>

@@ -1,4 +1,5 @@
 import mysql.connector
+from range import distance 
 
 db = mysql.connector.connect(database='routegen', user='routegen', password='easyPw123', host='127.0.0.1')
 cursor = db.cursor()
@@ -153,7 +154,7 @@ with open("data/planes.html", "r", encoding='utf8') as file:
             print("Failed:", query)
             continue
 """
-
+"""
 with open("data/Airports.txt", "r", encoding="utf8") as file:
     every = file.read().split('\n\n')[1:]
     for i in every:
@@ -174,7 +175,54 @@ with open("data/Airports.txt", "r", encoding="utf8") as file:
         query = "UPDATE airport SET a_rwy = {} WHERE a_icao = '{}';".format(maxi, icao)
         print(query)
         cursor.execute(query)
+"""
+
+with open("data/routes.dat", 'r', encoding='utf8') as file:
+    id = 0
+    for line in file:
+        (airline, _, dep, _, arr, _, codeshare, _, types) = line.split(',')
+        if (codeshare != ''):
+            print("codeshare", line)
+            continue
         
+        query = 'INSERT INTO route VALUES("{}", "{}", "{}", "{}", "{}");'.format(id, airline, dep, arr, types[:-1]);
+        #print(query)
+        
+        types = types[:-1].split(' ')
+        query = 'SELECT l_icao FROM airline WHERE l_iata= "{}" AND l_active = TRUE;'.format(airline)
+        cursor.execute(query)
+        query = cursor.fetchall()
+        try:
+            airline = query[0][0]
+        except IndexError:
+            print("failed", airline)
+            continue
+        
+        query = 'SELECT a_icao FROM airport WHERE a_iata= "{}";'.format(dep)
+        cursor.execute(query)
+        query = cursor.fetchall()
+        try:
+            dep = query[0][0]
+        except IndexError:
+            print("failed", dep)
+            continue
+        
+        query = 'SELECT a_icao FROM airport WHERE a_iata= "{}";'.format(arr)
+        cursor.execute(query)
+        query = cursor.fetchall()
+        try:
+            arr = query[0][0]
+        except IndexError:
+            print("failed", arr)
+            continue
+        
+        for i in types:
+            query = 'INSERT INTO route VALUES("{}", "{}", "{}", "{}", "{}", "{}");'.format(id, airline, dep, arr, i, distance(dep, arr));
+            if (id % 100 == 0):
+                print(query)
+            cursor.execute(query)
+            id += 1
+    
 
 print("FUUUUUUUCK")
 db.commit()

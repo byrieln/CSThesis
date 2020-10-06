@@ -35,7 +35,7 @@ def routeResponse(data):
     data['dep'] = data['dep'].upper()
     data['arr'] = data['arr'].upper()
     
-    route = findNext([data['dep']], data['dep'], data['arr'], data['range'], data['rwy'], data['skipAirports'])
+    route = findRoute(data['dep'], data['arr'], data['fleet'])
     if type(route) == list:
         #route = optimize(route, data['range'], data['rwy'], data['skipAirports'])
         response = {
@@ -54,6 +54,28 @@ def routeResponse(data):
         }
     return dumps(response)
     
+def findRoute(dep, arr, types):
+    route = []
+    
+    print(dep, arr)
+    routes = []
+    for type in types:
+        
+        query = "select * from route where r_dep = '{}' and (r_plane IN(SELECT p_iata FROM plane where p_icao = '{}'));".format(dep, type)
+        print(query)
+        cursor.execute(query)
+        query = cursor.fetchall()
+        for i in query:
+            routes.append(list(i)+[distance(i[3], arr)])
+    
+    #print(routes)
+    routes.sort(key=routeSortKey)
+    print(routes)
+    #return route
+
+def routeSortKey(route):
+    return route[-1]
+
 def getWeather(route):
     """
     Gets METAR reports of each destination in route
@@ -160,7 +182,7 @@ def codeType(code):
 
 
 current = time()
-data = b'{"dep":"uuee","arr":"ksfo","fleet":["B752", "A320"], "skipAirports":[]}'
+data = b'{"dep":"bikf","arr":"uuee","fleet":["B752", "A320"], "skipAirports":[]}'
 print(routeResponse(data), time()-current)
 
 

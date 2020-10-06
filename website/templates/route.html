@@ -12,16 +12,17 @@
 		<div id="input">
 			<form id="update">
 				<label for="dep">Departure:</label>
-				<input type="text" id="dep" name="dep">
+				<input type="text" id="dep" name="dep" placeholder="ICAO Code">
 				<label for="arr">Arrival:</label>
-				<input type="text" id="arr" name="arr">
-				<div id="dropdown">
-					<button onclick="dropButton()" class="dropButton">Fleet (0 selected):</button>
-					<div id="fleetDropdown" class="fleetDropdown-content">
-						<input type="text" placeholder="Search..." id="fleetInput" onkeyup="dropdownFilter()">
-					</div>
-				</div>
+				<input type="text" id="arr" name="arr" placeholder="ICAO Code">
+				
 			</form>
+			<div id="dropdown">
+				<button onclick="dropButton()" class="dropButton">Fleet (0 selected):</button>
+				<div id="fleetDropdown" class="fleetDropdown-content">
+					<input type="text" placeholder="Search..." id="fleetInput" onkeyup="dropdownFilter()"><br>
+				</div>
+			</div>
 			<button id="submission" onclick="submission()">Search</button>
 			<p id="loading">Loading results...</p>
 			<p id="noResult">No results found, try again. </p>

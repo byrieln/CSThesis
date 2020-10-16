@@ -176,7 +176,7 @@ async function submission() {
 	console.log(data);
 	showLoading();
 	//Send the POST request object to /range
-	fetch("/range", param)
+	fetch("/route", param)
 	.then(function(response) {
 		return response.json();
 	}).then(function(body) {
@@ -212,18 +212,29 @@ function redraw(data){
 	
 	//make a table header in the result
 	var table = document.createElement("table");
-	add = document.createElement("tr");
-	popRow(add, ["Departure","Arrival","Distance","Weather at Destination"]);
-	add.setAttribute("id","tableHead");
-	table.appendChild(add);
+	var row = document.createElement("tr");
+	add = ["Departure", "Arrival", "Airline", "Airplane", "Distance","Weather at Destination"];
+	
+	for (let i = 0; i < add.length; i++){		
+		var cell = document.createElement("th");
+		cell.setAttribute("id",add[i]);
+		cell.setAttribute("class","tableHead");
+		cell.innerHTML = add[i];
+		row.appendChild(cell);
+	}
+	table.appendChild(row);
+	
+
 	
 	//populate data
 	for(let i = 0; i < data.skip.length; i++){
 		addSidebar(data.skip[i], sidebar, false);
+		
+		
 	}
 	
 	
-	for(let i = 0; i < data.route.length-1; i++){
+	for(let i = 0; i < data.route.length; i++){
 		//add data to sidebar
 		if (i != 0){
 			addSidebar(data.route[i], sidebar, true);
@@ -235,10 +246,8 @@ function redraw(data){
 		});
 		
 		//add data to route
-		add = document.createElement("tr");
-		popRow(add, [data.route[i], data.route[i+1], data.lengths[i], data.weather[i]]);
-		add.setAttribute("id", "tableRow");
-		table.appendChild(add);
+		popRow(table, data.route[i], data.lengths[i], data.weather[i]);
+		
 	}
 	
 	//add an update button the the sidebar
@@ -270,13 +279,57 @@ function addSidebar(stop, sidebar, checked) {
 	
 }
 
-function popRow(row, data){
-	var labels = ["Departure","Arrival","Distance","Weather"];
-	for(let i = 0; i < data.length; i++){
+function popRow(table, route, length, weather){
+	var row = document.createElement("tr");
+	var labels = ["Departure", "Arrival", "Airline", "Airplane", "Distance","Weather at Destination"];
+	for(let i = 0; i < labels.length; i++){
+		
 		var cell = document.createElement("th");
 		cell.setAttribute("id",labels[i]);
 		cell.setAttribute("class","tableCell");
-		cell.innerHTML = data[i];
+		if (i == 0){
+			cell.innerHTML = "(" + route.depICAO + "/" + route.depIATA + ") " + route.dep;
+		} else if (i==1){
+			cell.innerHTML = "(" + route.arrICAO + "/" + route.arrIATA + ") " + route.arr;
+		} else if (i==2){
+			cell.innerHTML = route.flight[0][0];
+		} else if (i==3){
+			cell.innerHTML = route.flight[0][1]
+		} else if (i==4){
+			cell.innerHTML = length;
+		} else if (i==5) {
+			cell.innerHTML = weather;
+		}
 		row.appendChild(cell);
 	}
+	row.setAttribute("class", "tableRow");
+	table.appendChild(row);
+	for(let j = 1; j < route.flight.length; j++){
+		row = document.createElement("tr");
+		
+		for (let i = 0; i < labels.length; i++){
+			if (i == 2 || i ==3 ){ //if adding the airline or airplane, add data
+				cell = document.createElement("th");
+				if (i == 2){
+					cell.innerHTML = route.flight[j][0]
+				}
+				else {
+					cell.innerHTML = route.flight[j][1]
+				}
+			}
+			else{
+				cell = document.createElement("th");
+				cell.innerHTML = "";
+			}
+			cell.setAttribute("id",labels[i]);
+			cell.setAttribute("class","tableCell");
+			row.appendChild(cell);
+		}
+		row.setAttribute("class", "tableRow");
+		table.appendChild(row);
+	}
+	
+	
+	
+	return row
 }

@@ -1,5 +1,6 @@
 import mysql.connector
 from range import distance 
+from json import loads
 
 db = mysql.connector.connect(database='routegen', user='routegen', password='easyPw123', host='127.0.0.1')
 cursor = db.cursor()
@@ -176,7 +177,7 @@ with open("data/Airports.txt", "r", encoding="utf8") as file:
         print(query)
         cursor.execute(query)
 """
-
+"""
 with open("data/routes.dat", 'r', encoding='utf8') as file:
     id = 0
     for line in file:
@@ -222,7 +223,23 @@ with open("data/routes.dat", 'r', encoding='utf8') as file:
                 print(query)
             cursor.execute(query)
             id += 1
-    
+"""
+with open("data/types.json", "r", encoding="utf8") as file: 
+    data = loads(file.read())
+    for i in data:
+        query = "SELECT * FROM plane WHERE p_iata = '{}' and p_icao = '{}';".format(i['iata'], i['icao'])
+        cursor.execute(query)
+        result = cursor.fetchall()
+        if len(result) == 0:
+            if len(i['iata']) == 0 or i['iata'] == 'n/a':
+                i['iata'] = i['icao'][:3]
+            if len(i['icao']) == 0 or i['icao'] == 'n/a':
+                i['icao'] = i['iata']
+            query = "INSERT INTO plane VALUES('{}','{}','{}');".format(i['icao'], i['iata'], i['name'])
+            print(query)
+            cursor.execute(query)
+
+
 
 print("FUUUUUUUCK")
 db.commit()

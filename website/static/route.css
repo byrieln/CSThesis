@@ -129,20 +129,25 @@
 	font-size: 18px;
 }
 
-#tableRow th {
+.tableRow th {
 	font-weight: lighter;
 }
 
 #Departure {
-	width: 6em;
+	width: 15em;
 }
 
 #Arrival {
-	width: 6em;
+	width: 15em;
 }
-
+#Airline{
+	width:8em;
+}
+#Airplane{
+	width:8em;
+}
 #Distance {
-	width: 6em;
+	width: 4em;
 }
 
 #weather {

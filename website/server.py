@@ -45,6 +45,7 @@ def routeInput():
 
 @app.route('/fleet', methods=['POST'])
 def fleet():
+    print("Fleet Request")
     return getFleet()
 
 if __name__ == "__main__":

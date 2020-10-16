@@ -1,0 +1,102 @@
+h1 { 
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 9ems;
+    font-weight: 100;
+	color: #0099FF;
+	text-align: Center; 
+}
+h2 {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 18pt;
+    font-weight: 100;
+	color: #0099FF;
+	text-align: Center;
+}
+h3 {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 10pt;
+    font-weight: 100;
+	color: #0099FF;
+	text-align: Center;
+}
+h4 {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 12pt;
+    font-weight: 100;
+	color: #0099FF;
+	text-align: Center;
+	font-style: italic;
+}
+.p  {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 18pt;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-weight: bold
+}
+h6 {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 10pt;
+    font-weight: 100;
+	color: #0099FF;
+	text-align: Center;
+}
+table {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 10pt;
+}
+body {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 10pt
+}
+.alt {
+	background-color: #999999;
+}
+.odd {
+	background-color: #CCCCCC;
+}
+.tablebg {
+	font-family: "Trebuchet MS", Verdana, Arial;
+	font-size: 1.5em;
+	background-color: #0099FF;
+	color: white;
+}
+.recstatus {
+	font-size: 12pt;
+}
+.stripe1 {
+	background-color: #CCC;
+}
+.stripe2 {
+	background-color: #FFF;
+}
+.highlight {
+	background-color: #666;
+	font-weight: bold;
+        color: white
+}
+.arpt_table {
+	width: 600px;
+}		  
+.wake_table {
+    margin-left: auto;
+    margin-right: auto;
+    width: 250px;
+}
+.tablebg img{
+	float: Left;
+    border-width: 0;
+    vertical-align: middle;
+}
+footer {
+     background: #ccc;
+}
+.push-right {
+  float: right;
+  -webkit-justify-content: flex-end;
+  -moz-justify-content: flex-end;
+  justify-content: flex-end;
+}
+.table_bg {
+	background: #0099FF;
+	color: white;
+}

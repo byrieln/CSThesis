@@ -1,0 +1,261 @@
+This page uses the non standard property “zoom”. Consider using calc() in the relevant property values, or using “transform” along with “transform-origin: 0 0”. acrtypes.asp
+Using //@ to indicate sourceMappingURL pragmas is deprecated. Use //# instead jquery-1.10.1.min.js:2:21
+The character encoding of the HTML document was not declared. The document will render with garbled text in some browser configurations if the document contains characters from outside the US-ASCII range. The character encoding of the page must be declared in the document or in the transfer protocol. acrtypes.asp
+Self: null content.js:115:13
+Array(24) [ HTMLCollection, HTMLCollection, HTMLCollection, HTMLCollection, HTMLCollection, HTMLCollection, HTMLCollection, HTMLCollection, HTMLCollection, HTMLCollection, … ]
+debugger eval code:1:9
+onmozfullscreenchange is deprecated. acrtypes.asp
+onmozfullscreenerror is deprecated. acrtypes.asp
+Array(382) [ tr, tr, tr, tr, tr, tr, tr, tr, tr, tr, … ]
+debugger eval code:1:9
+console.log(items)
+Array(382) [ tr, tr, tr, tr, tr, tr, tr, tr, tr, tr, … ]
+debugger eval code:1:9
+undefined
+console.log(items)
+Array(382) [ tr, tr, tr, tr, tr, tr, tr, tr, tr, tr, … ]
+debugger eval code:1:9
+undefined
+entries
+HTMLCollection { 0: tr, 1: tr, 2: tr, 3: tr, 4: tr, length: 5 }
+
+tables
+HTMLCollection { 0: table.ink-table.alternating, 1: table.ink-table.alternating, 2: table.ink-table.alternating, 3: table.ink-table.alternating, 4: table.ink-table.alternating, 5: table.ink-table.alternating, 6: table.ink-table.alternating, 7: table.ink-table.alternating, 8: table.ink-table.alternating, 9: table.ink-table.alternating, … }
+
+rows = []
+for(let i = 2; i < tables.length; i++){
+    console.log(tables[2].getElementsByTagName("tr"));
+}
+HTMLCollection { 0: tr, 1: tr, 2: tr, 3: tr, 4: tr, 5: tr, 6: tr, 7: tr, 8: tr, 9: tr, … }
+debugger eval code:3:10
+HTMLCollection { 0: tr, 1: tr, 2: tr, 3: tr, 4: tr, 5: tr, 6: tr, 7: tr, 8: tr, 9: tr, … }
+debugger eval code:3:10
+HTMLCollection { 0: tr, 1: tr, 2: tr, 3: tr, 4: tr, 5: tr, 6: tr, 7: tr, 8: tr, 9: tr, … }
+debugger eval code:3:10
+HTMLCollection { 0: tr, 1: tr, 2: tr, 3: tr, 4: tr, 5: tr, 6: tr, 7: tr, 8: tr, 9: tr, … }
+debugger eval code:3:10
+HTMLCollection { 0: tr, 1: tr, 2: tr, 3: tr, 4: tr, 5: tr, 6: tr, 7: tr, 8: tr, 9: tr, … }
+debugger eval code:3:10
+HTMLCollection { 0: tr, 1: tr, 2: tr, 3: tr, 4: tr, 5: tr, 6: tr, 7: tr, 8: tr, 9: tr, … }
+debugger eval code:3:10
+HTMLCollection { 0: tr, 1: tr, 2: tr, 3: tr, 4: tr, 5: tr, 6: tr, 7: tr, 8: tr, 9: tr, … }
+debugger eval code:3:10
+HTMLCollection { 0: tr, 1: tr, 2: tr, 3: tr, 4: tr, 5: tr, 6: tr, 7: tr, 8: tr, 9: tr, … }
+debugger eval code:3:10
+HTMLCollection { 0: tr, 1: tr, 2: tr, 3: tr, 4: tr, 5: tr, 6: tr, 7: tr, 8: tr, 9: tr, … }
+debugger eval code:3:10
+HTMLCollection { 0: tr, 1: tr, 2: tr, 3: tr, 4: tr, 5: tr, 6: tr, 7: tr, 8: tr, 9: tr, … }
+debugger eval code:3:10
+HTMLCollection { 0: tr, 1: tr, 2: tr, 3: tr, 4: tr, 5: tr, 6: tr, 7: tr, 8: tr, 9: tr, … }
+debugger eval code:3:10
+HTMLCollection { 0: tr, 1: tr, 2: tr, 3: tr, 4: tr, 5: tr, 6: tr, 7: tr, 8: tr, 9: tr, … }
+debugger eval code:3:10
+HTMLCollection { 0: tr, 1: tr, 2: tr, 3: tr, 4: tr, 5: tr, 6: tr, 7: tr, 8: tr, 9: tr, … }
+debugger eval code:3:10
+HTMLCollection { 0: tr, 1: tr, 2: tr, 3: tr, 4: tr, 5: tr, 6: tr, 7: tr, 8: tr, 9: tr, … }
+debugger eval code:3:10
+HTMLCollection { 0: tr, 1: tr, 2: tr, 3: tr, 4: tr, 5: tr, 6: tr, 7: tr, 8: tr, 9: tr, … }
+debugger eval code:3:10
+HTMLCollection { 0: tr, 1: tr, 2: tr, 3: tr, 4: tr, 5: tr, 6: tr, 7: tr, 8: tr, 9: tr, … }
+debugger eval code:3:10
+HTMLCollection { 0: tr, 1: tr, 2: tr, 3: tr, 4: tr, 5: tr, 6: tr, 7: tr, 8: tr, 9: tr, … }
+debugger eval code:3:10
+HTMLCollection { 0: tr, 1: tr, 2: tr, 3: tr, 4: tr, 5: tr, 6: tr, 7: tr, 8: tr, 9: tr, … }
+debugger eval code:3:10
+HTMLCollection { 0: tr, 1: tr, 2: tr, 3: tr, 4: tr, 5: tr, 6: tr, 7: tr, 8: tr, 9: tr, … }
+debugger eval code:3:10
+HTMLCollection { 0: tr, 1: tr, 2: tr, 3: tr, 4: tr, 5: tr, 6: tr, 7: tr, 8: tr, 9: tr, … }
+debugger eval code:3:10
+HTMLCollection { 0: tr, 1: tr, 2: tr, 3: tr, 4: tr, 5: tr, 6: tr, 7: tr, 8: tr, 9: tr, … }
+debugger eval code:3:10
+HTMLCollection { 0: tr, 1: tr, 2: tr, 3: tr, 4: tr, 5: tr, 6: tr, 7: tr, 8: tr, 9: tr, … }
+debugger eval code:3:10
+undefined
+things = []
+for(let i = 2; i < tables.length; i++){
+    things.push(tables[i].getElementsByTagName("tr"));
+}
+22
+things
+(22) […]
+​
+0: HTMLCollection { 0: tr, 1: tr, 2: tr, … }
+​
+1: HTMLCollection { 0: tr, 1: tr, 2: tr, … }
+​
+2: HTMLCollection { 0: tr, 1: tr, 2: tr, … }
+​
+3: HTMLCollection { 0: tr, 1: tr, 2: tr, … }
+​
+4: HTMLCollection { 0: tr, 1: tr, 2: tr, … }
+​
+5: HTMLCollection { 0: tr, 1: tr, 2: tr, … }
+​
+6: HTMLCollection { 0: tr, 1: tr, 2: tr, … }
+​
+7: HTMLCollection { 0: tr, 1: tr, 2: tr, … }
+​
+8: HTMLCollection { 0: tr, 1: tr, length: 6, … }
+​
+9: HTMLCollection { 0: tr, 1: tr, length: 6, … }
+​
+10: HTMLCollection { 0: tr, 1: tr, 2: tr, … }
+​
+11: HTMLCollection { 0: tr, 1: tr, length: 7, … }
+​
+12: HTMLCollection { 0: tr, 1: tr, 2: tr, … }
+​
+13: HTMLCollection { 0: tr, 1: tr, 2: tr, … }
+​
+14: HTMLCollection { 0: tr, 1: tr, length: 6, … }
+​
+15: HTMLCollection { 0: tr, 1: tr, length: 9, … }
+​
+16: HTMLCollection { 0: tr, 1: tr, length: 3, … }
+​
+17: HTMLCollection { 0: tr, 1: tr, 2: tr, … }
+​
+18: HTMLCollection { 0: tr, 1: tr, length: 7, … }
+​
+19: HTMLCollection { 0: tr, 1: tr, length: 3, … }
+​
+20: HTMLCollection { 0: tr, 1: tr, length: 3, … }
+​
+21: HTMLCollection { 0: tr, 1: tr, length: 7, … }
+​
+length: 22
+​
+<prototype>: Array []
+
+for(let i = 0; i < things.length; i++){
+}
+undefined
+rows = []
+for(let i = 0; i < things.length; i++){
+    for (let j = 2; j < things[i].length; j++){
+        rows.push(things[i][2])
+    }…
+370
+rows
+Array(370) [ tr, tr, tr, tr, tr, tr, tr, tr, tr, tr, … ]
+
+rows = []
+Array []
+
+rows = []
+for(let i = 0; i < things.length; i++){
+    for (let j = 2; j < things[i].length; j++){
+        rows.push(things[i][j])
+    }…
+370
+rows
+(370) […]
+​
+[0…99]
+​
+[100…199]
+​
+[200…299]
+​
+[300…369]
+​
+length: 370
+​
+<prototype>: Array []
+
+rows = []
+Array []
+
+rows = []
+for(let i = 0; i < things.length; i++){
+    for (let j = 1; j < things[i].length; j++){
+        rows.push(things[i][j])
+    }…
+392
+rows
+Array(392) [ tr, tr, tr, tr, tr, tr, tr, tr, tr, tr, … ]
+
+rows = []
+Array []
+
+things = []
+for(let i = 1; i < tables.length; i++){
+    things.push(tables[i].getElementsByTagName("tr"));
+}
+23
+things
+(23) […]
+​
+0: HTMLCollection { 0: tr, 1: tr, 2: tr, … }
+​
+1: HTMLCollection { 0: tr, 1: tr, 2: tr, … }
+​
+2: HTMLCollection { 0: tr, 1: tr, 2: tr, … }
+​
+3: HTMLCollection { 0: tr, 1: tr, 2: tr, … }
+​
+4: HTMLCollection { 0: tr, 1: tr, 2: tr, … }
+​
+5: HTMLCollection { 0: tr, 1: tr, 2: tr, … }
+​
+6: HTMLCollection { 0: tr, 1: tr, 2: tr, … }
+​
+7: HTMLCollection { 0: tr, 1: tr, 2: tr, … }
+​
+8: HTMLCollection { 0: tr, 1: tr, 2: tr, … }
+​
+9: HTMLCollection { 0: tr, 1: tr, length: 6, … }
+​
+10: HTMLCollection { 0: tr, 1: tr, length: 6, … }
+​
+11: HTMLCollection { 0: tr, 1: tr, 2: tr, … }
+​
+12: HTMLCollection { 0: tr, 1: tr, length: 7, … }
+​
+13: HTMLCollection { 0: tr, 1: tr, 2: tr, … }
+​
+14: HTMLCollection { 0: tr, 1: tr, 2: tr, … }
+​
+15: HTMLCollection { 0: tr, 1: tr, length: 6, … }
+​
+16: HTMLCollection { 0: tr, 1: tr, length: 9, … }
+​
+17: HTMLCollection { 0: tr, 1: tr, length: 3, … }
+​
+18: HTMLCollection { 0: tr, 1: tr, 2: tr, … }
+​
+19: HTMLCollection { 0: tr, 1: tr, length: 7, … }
+​
+20: HTMLCollection { 0: tr, 1: tr, length: 3, … }
+​
+21: HTMLCollection { 0: tr, 1: tr, length: 3, … }
+​
+22: HTMLCollection { 0: tr, 1: tr, length: 7, … }
+​
+length: 23
+​
+<prototype>: Array []
+
+rows = []
+for(let i = 0; i < things.length; i++){
+    for (let j = 2; j < things[i].length; j++){
+        rows.push(things[i][j])
+    }…
+379
+rows
+Array(379) [ tr, tr, tr, tr, tr, tr, tr, tr, tr, tr, … ]
+
+rows[4].getElementsByTagName("td")
+HTMLCollection { 0: td, 1: td, 2: td, 3: td, length: 4 }
+
+elements = []
+Array []
+
+for(let i = 0; i < rows.length; i++){
+    current = rows[i].getElementsByTagName("td");
+    elements.push({'iata':current[0], 'icao':current[1], 'name':current[2]});
+}
+379
+elements
+Array(379) [ {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, … ]
+

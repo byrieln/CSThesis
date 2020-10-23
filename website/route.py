@@ -394,5 +394,5 @@ print(routeResponse(data), time()-current)
 """
 
 current = time()
-data = b'{"dep":"bgBW","arr":"fact","fleet":[ "A320", "B752","DH8A","DH8B","DH8C","DH8D","DH8", "B77W", "B77L", "B738", "B737"], "skipAirports":[]}'
+data = b'{"dep":"bgBW","arr":"fact","fleet":[ "A320", "DH8"], "skipAirports":[]}'
 print(routeResponse(data), time()-current)

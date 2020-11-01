@@ -18,20 +18,20 @@ $(document).ready(function() {
 function showLoading(){
 	//show the Loading element and hide the others
 	document.getElementById("output").style.visibility = "hidden";
-	document.getElementById("noResult").style.visibility = "hidden";
-	document.getElementById("loading").style.visibility = "visible";
+	document.getElementById("noResult").style.display = "none";
+	document.getElementById("loading").style.display = "block";
 }
 function showOutput(){
 	//show the Output element and hide the others
 	document.getElementById("output").style.visibility = "visible";
-	document.getElementById("noResult").style.visibility = "hidden";
-	document.getElementById("loading").style.visibility = "hidden";
+	document.getElementById("noResult").style.display = "none";
+	document.getElementById("loading").style.display = "none";
 }
 function showNoResult(){
 	//show the No Result element and hide the others
 	document.getElementById("output").style.visibility = "hidden";
-	document.getElementById("noResult").style.visibility = "visible";
-	document.getElementById("loading").style.visibility = "hidden";
+	document.getElementById("noResult").style.display = "block";
+	document.getElementById("loading").style.display = "none";
 }
 
 
@@ -134,7 +134,8 @@ async function submission() {
 		"dep": form[0].value,
 		"arr": form[1].value,
 		"fleet":fleet,
-		"skipAirports":[]
+		"skipAirports":[],
+		"skipAirlines":[]
 	};
 	if (data.dep == "" || data.arr == "" || data.range=="" || data.rwy==""){
 		console.log("Invalid data!");
@@ -153,7 +154,7 @@ async function submission() {
 			for (let i = 0; i < result.children.length; i++){
 				//console.log(result.children[i].tagName);
 				if (result.children[i].tagName == "INPUT" && result.children[i].checked == false){
-					data.skipAirports.push(result.children[i].getAttribute("name"));
+					data["skip"+result.children[i].getAttribute('class').substring(7)].push(result.children[i].getAttribute("name"));
 					console.log("skip " + result.children[i].getAttribute("name"));
 				}
 			}
@@ -193,7 +194,7 @@ function redraw(data){
 	var sidebar = document.getElementById("sidebar");
 	var result = document.getElementById("result");
 	
-	if (data.route=="No Route"){
+	if (data.route.length==0){
 		showNoResult();
 		return;
 	}
@@ -206,9 +207,7 @@ function redraw(data){
 	console.log(data.route);
 	
 	//made a sidebar header
-	var add = document.createElement("h4");
-	add.innerHTML = "Airports:";
-	sidebar.appendChild(add);
+	
 	
 	//make a table header in the result
 	var table = document.createElement("table");
@@ -227,18 +226,34 @@ function redraw(data){
 
 	
 	//populate data
-	for(let i = 0; i < data.skip.length; i++){
-		addSidebar(data.skip[i], sidebar, false);
-		
-		
+	var add = document.createElement("h4");
+	add.innerHTML = "Airports:";
+	sidebar.appendChild(add);
+	airports = []
+	for (let i = 0; i < data.route.length; i++){
+		airports.push(data.route[i].arrICAO);
 	}
+	addSidebar("Airports", airports, sidebar, data.skipAirports);
+	addSidebar("Airports", data.skipAirports, sidebar, data.skipAirports);
 	
+	var add = document.createElement("h4");
+	add.innerHTML = "Airlines:";
+	sidebar.appendChild(add);
+	airlines = []
+	for (let i = 0; i < data.route.length; i++){
+		for (let j = 0; j < data.route[i].flight.length; j++){
+			console.log(data.route[i].flight);
+			if (! airlines.includes(data.route[i].flight[j][0])){
+				airlines.push(data.route[i].flight[j][0]);
+			}
+		}
+	}
+	addSidebar("Airlines", airlines, sidebar, data.skipAirlines);
+	addSidebar("Airlines", data.skipAirlines, sidebar, data.skipAirlines);
 	
 	for(let i = 0; i < data.route.length; i++){
 		//add data to sidebar
-		if (i != 0){
-			addSidebar(data.route[i], sidebar, true);
-		}
+		
 		
 		//add a jquery listener that triggers the function any time a sidebar checkbox is clicked
 		$(".sidebarAirport").on("click", function(){
@@ -258,25 +273,32 @@ function redraw(data){
 	showOutput();
 }
 
-function addSidebar(stop, sidebar, checked) {
+function addSidebar(label, list, sidebar, skip) {
+	console.log(list);
+	
 	//add a checkbox to the sidebar
-	var check = document.createElement("input");
-	check.setAttribute("type","checkbox");
-	check.setAttribute("name",stop);
-	check.setAttribute("value",stop);
-	check.setAttribute("class","sidebarAirport");
-	check.checked=checked;
-	sidebar.appendChild(check);
-	
-	//add a label to the checkbox
-	check = document.createElement("label");
-	check.setAttribute("for", stop);
-	check.innerHTML = stop;
-	sidebar.appendChild(check);
-	
-	//add a line break
-	sidebar.appendChild(document.createElement("br"));
-	
+	for (let i = 0; i < list.length; i ++){
+		var check = document.createElement("input");
+		check.setAttribute("type","checkbox");
+		check.setAttribute("name",list[i]);
+		check.setAttribute("value",list[i]);
+		check.setAttribute("class","sidebar"+label);
+		if (skip.includes(list[i])){
+			check.checked=false;
+		}else{
+			check.checked=true;
+		}		
+		sidebar.appendChild(check);
+		
+		//add a label to the checkbox
+		check = document.createElement("label");
+		check.setAttribute("for", list[i]);
+		check.innerHTML = list[i];
+		sidebar.appendChild(check);
+		
+		//add a line break
+		sidebar.appendChild(document.createElement("br"));
+	}
 }
 
 function popRow(table, route, length, weather){

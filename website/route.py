@@ -35,7 +35,7 @@ def routeResponse(data):
     data['dep'] = data['dep'].upper()
     data['arr'] = data['arr'].upper()
     
-    route = findRoute([data['dep']], data['dep'], data['arr'], data['fleet'], data['skipAirports'])
+    route = findRoute([data['dep']], data['dep'], data['arr'], data['fleet'], data['skipAirports'], data['skipAirlines'])
     route = optimize(route, data['fleet'])
     legs = getLegs(route, data['fleet'])
     
@@ -45,15 +45,17 @@ def routeResponse(data):
             'route':legs,
             'lengths':routeLengths(route),
             'weather': getWeather(route[1:]),
-            'skip': data['skipAirports']
+            'skipAirports': data['skipAirports'],
+            'skipAirlines': data['skipAirlines']
         }
     
     else:
         response = {
-            'route':route,
+            'route':'No Route',
             'lengths':[],
             'weather': [],
-            'skip': data['skipAirports']
+            'skipAirports': data['skipAirports'],
+            'skipAirlines': data['skipAirlines']
         }
     print(response)
     return dumps(response)
@@ -141,8 +143,22 @@ class Airport():
     def apPrint(self):
         print(self.icao, end = " ")
 
-def findRoute(route, dep, arr, types, skip):
-    
+def airlineNameToICAO(airlines):
+    outputs = []
+    for i in airlines:
+        query = 'SELECT l_icao FROM airline WHERE l_name="{}";'.format(i)
+        cursor.execute(query)
+        query = cursor.fetchall()
+        if query[0][0] in outputs:
+            continue
+        else:
+            outputs.append(query[0][0])
+    return outputs
+
+def findRoute(route, dep, arr, types, skipAP, skipAL):
+
+    #Javascript has a list of names, so convert it to a list of ICAO codes
+    skipAL = airlineNameToICAO(skipAL)
     #Create a list of airports that have been visited
     airports = [Airport(arr, dep, arr, [])]
     
@@ -160,13 +176,12 @@ def findRoute(route, dep, arr, types, skip):
     
         #The length of the route so far
         length = sum(routeLengths(dests[0][1])) + distance(dests[0][0], arr)
-        print(dests[0], getAP(airports, arr).getRoute())
-        printList(airports)
-        if dests[0][0] == 'OMDB':
-            print(length, getAP(airports, arr).getRouteLen())
-            print(routeLengths(dests[0][1]), routeLengths(getAP(airports, arr).getRoute()))
+        #print(dests[0], getAP(airports, arr).getRoute())
+        #printList(airports)
+        
         #If the length of the new route is longer than the best length, ignore it
-        if length > optimal:
+        #Also check the airport skip condition
+        if length > optimal or dests[0][0] in skipAP:
             
             #remove the destination from the list and continue using it
             dests.remove(dests[0])
@@ -192,11 +207,13 @@ def findRoute(route, dep, arr, types, skip):
                         return getAP(airports, arr).getRoute()
         #If the airport node hasn't been visited yet and the route to it is shorter than the optimal route
         else:
-            #
+            #if the currently evaluated route is shorter than the optimal, continue evaluating it
             if length < optimal:
                 
-                
+                #add the current airport into list of visited airports
                 airports = insert(airports, dests[0][0], dep, arr, dests[0][1], optimal)
+                
+                #If the current airport is the arrival, change the length, since this is the shortest route found yet
                 if dests[0][0] == arr:
                     optimal = length
                     
@@ -204,26 +221,44 @@ def findRoute(route, dep, arr, types, skip):
                     if len(getAP(airports, arr).getRoute())==2:
                         return getAP(airports, arr).getRoute()
                 #print(dests[0][0], getAP(airports, dests[0][0]).getRoute())
-            
+                
+                #run a query for each aircraft type
                 for type in types:
                     query = "select * from route where r_dep = '{}' and (r_plane IN(SELECT p_iata FROM plane where p_icao = '{}'));".format(dests[0][0], type)
-                    #print(query)
                     cursor.execute(query)
                     query = cursor.fetchall()
-                    for i in query:
+                    
+                    #Evaluate each query result 
+                    for i in query:             
+                        #If the destination is in the route to the current airport, ignore it
                         if i[3] in dests[0][1]:
                             continue
-                        if i[3] in skip:
+                        #If told to skip an airport or airline, ignore it
+                        if i[1] in skipAL or i[3] in skipAP:
                             continue
+                        #If there is a route from the current airport to the destination, evaluate that one next
                         if i[3] == arr:
                             dests.insert(1,[i[3], dests[0][1]+[i[3]]])
+                        #Otherwise put it at the end of the list
                         else:
                             dests.append([i[3], dests[0][1]+[i[3]]])
+                            
+        #Remove the first item from the list, since it was just evaluated
         dests.remove(dests[0])
+        
+        #This is an optimization to encourage finding a route as quickly as possible
         if optimal == 999999999999:
             iteration += 1
-            #print("Still max", iteration)
-            if iteration < 50: #If there is no route found in sorted iterations, the nearest stop is not the best
+            
+            """
+            This optimization works very well if the best route goes the same direction as the shortest straight line between two airports.
+            However, it doesn't work if the best route requires going a different direction from the shortest straight line. 
+            
+            For the first 50 iterations, or until a route is found, the destination list is sorted to put the nearest airport first.
+            This encourages finding a route similar to the shortest straight line between airports as quickly as possible. 
+            If it takes more than 50 iterations to find a route, the best route is not similar to the shortest straight line. 
+            """
+            if iteration < 50: 
                 dests.sort(key = lambda stop:distance(stop[0], arr))
     
     return getAP(airports, arr).getRoute()
@@ -393,6 +428,8 @@ data = b'{"dep":"klax","arr":"yssy","fleet":[ "A320", "B752"], "skipAirports":[]
 print(routeResponse(data), time()-current)
 """
 
+"""
 current = time()
 data = b'{"dep":"bgBW","arr":"fact","fleet":[ "A320", "DH8"], "skipAirports":[]}'
 print(routeResponse(data), time()-current)
+"""

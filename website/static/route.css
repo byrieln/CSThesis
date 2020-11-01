@@ -92,7 +92,7 @@
 	position: absolute;
 	top: 0px;
 	left: 0;
-	width: 6em;
+	width: 10em;
 	height: 100%;
 	border: 3px solid #AAAAAA;
 }
@@ -111,7 +111,7 @@
 	visibility: inherit;
 	position: absolute;
 	top: 0px;
-	left: 8em;
+	left: 11em;
 	width: 66%;
 	height:100%;
 	border: 3px solid #BBBBBB;
@@ -155,7 +155,7 @@
 	position: absolute;
 	top: 0px;
 	right: 0;
-	width: 25%;
+	width: 20%;
 	height: 100%;
 	border: 3px solid #CCCCCC;
 }

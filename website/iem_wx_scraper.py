@@ -103,14 +103,67 @@ def download_alldata():
             fh.write(data)
         now += interval
 
-
-def getWX(startDate, endDate, airports):
+def getWX(station, date):
     """Our main method"""
     # timestamps in UTC to request data for
-    y, m, d = tuple(startDate)
-    startts = datetime.datetime(y, m, d)
-    y, m, d = tuple(endDate)
-    endts = datetime.datetime(y, m, d)
+    
+    #ts = date.split('-')
+
+    service = SERVICE + "data=all&tz=Etc/UTC&format=comma&latlon=yes&"
+
+    service += date.strftime("year1=%Y&month1=%m&day1=%d&")
+    """
+    adding 2 days to the date range also gets the following day
+    This is required due to the UTC to local time conversion
+    Don't need preceding day, because all locations are in the US, all behind UTC
+    """
+    service += (date + datetime.timedelta(days=2)).strftime("year2=%Y&month2=%m&day2=%d&")
+
+    # Two examples of how to specify a list of stations
+    #print(type(airports)
+    # stations = get_stations_from_filelist("mystations.txt")
+
+    uri = "%s&station=%s" % (service, station)
+    #print(uri)
+    print("Downloading: %s" % (station,), end = " ")
+    data = download_data(uri)
+    #print(" Got Data")
+    print('')
+    #print(data)
+    return format(data)
+
+def makeTimestamp(year, month, day, time):
+    #Takes the time and date given by the dataset and converts it to UTC timestamp (denoted as 'Z' in aviation)
+    #Copied here so I dont have to rewrite it
+    div = time//100
+    mod = time % 100
+    if div > 23 or div < 0 or mod > 59 or mod < 0:
+        return None
+    return  datetime.datetime.strptime('{}-{}-{} {}:{}'.format(year, month, day, div, mod), '%Y-%m-%d %H:%M')
+
+def getMonthlyWX(station, date):
+    dayOfMonth = date.day
+    
+    fromdate = date - datetime.timedelta(days=dayOfMonth)
+    todate = fromdate + datetime.timedelta(days=31)
+        
+    return getWXRange(fromdate, todate, station)
+
+def getFullWX(station):
+    #gets full weather between October 2008 and May 2020
+    #More wiggle room than necessary added for timezone differences
+    fromDate = makeTimestamp(2008, 9, 1, 0000)
+    toDate = makeTimestamp(2020, 6, 2, 0000)
+    
+    return getWXRange(fromDate, toDate, station)
+
+def getWXRange(startDate, endDate, airports):
+    """Our main method"""
+    # timestamps in UTC to request data for
+    
+    startts = startDate
+    #y, m, d = tuple(endDate)
+    endts = endDate
 
     service = SERVICE + "data=all&tz=Etc/UTC&format=comma&latlon=yes&"
 
@@ -126,7 +179,7 @@ def getWX(startDate, endDate, airports):
     # stations = get_stations_from_filelist("mystations.txt")
     for station in stations:
         uri = "%s&station=%s" % (service, station)
-        print("Downloading: %s" % (station,), end = "")
+        print("Downloading: %s" % (station,), end = " ")
         data = download_data(uri)
         #print(" Got Data")
         output.append(data)
@@ -145,7 +198,7 @@ def format(raw):
         output = output + i[i.find('station'):].split('\n')[:-1]
     for i in range(len(output)):
         output[i] = tuple(output[i].split(','))
-    print(output)
+    return output
 
 if __name__ == "__main__":
     #    download_alldata()

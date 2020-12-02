@@ -104,6 +104,7 @@ print('Training Complete')
 
 #-SHSN DRSN
 #BKN018CB 
+#BIKF 021700Z 01029G40KT 9999 VCSH DRSN BKN020CB M03/M07 Q0998 RESHSN R01/410077
 
 def getPredictions(route):
     #print(route)
@@ -268,6 +269,8 @@ def getCloud(wx):
         return wx, '0', 0.0
     if clouds[0] =='CLR':
         return wx, 'CLR', 0.0
+    if '/' in clouds[0]:
+        return wx, '0', 0.0
     for i in clearWords:
         if clouds[0] == i:
             return wx, 'CLR', 0.0
@@ -322,7 +325,7 @@ def getWeather(route):
             weather.append(data)
     return weather
 
-print(getPredictions(['BIKF', 'YSSY', 'PHNL', 'KMGW', 'ZBAA', 'UUSS', 'ZMUB', 'KJFK', 'KHZL']))
+#print(getPredictions(['BIKF', 'YSSY', 'PHNL', 'KMGW', 'ZBAA', 'UUSS', 'ZMUB', 'KJFK', 'KHZL']))
 
 #print(metarToDict('PHNL 012153Z 16009KT 10SM FEW025 FEW035 27/18 A3001 RMK AO2 SLP160 T02670178'))
 #print(metarToDict('ZBAA 012200Z 02003MPS 360V060 CAVOK M02/M11 Q1035 NOSIG'))

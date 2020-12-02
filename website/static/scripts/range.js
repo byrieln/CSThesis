@@ -92,6 +92,7 @@ function redraw(data){
 	/**
 	Redraw the response data
 	**/
+	console.log(data);
 	//get variables for the sidebar and result
 	var sidebar = document.getElementById("sidebar");
 	var result = document.getElementById("result");
@@ -150,6 +151,69 @@ function redraw(data){
 	result.appendChild(table);
 	
 	weather = document.getElementById('weather');
+	add = document.createElement("h4");
+	add.innerText = "Weather Challenges:";
+	weather.innerHTML = "";
+	weather.appendChild(add);
+	
+	pred = data.predict;
+	if (pred.delay.length > 0){
+		add = document.createElement("p");
+		add.setAttribute("id", "delay");
+		add.innerText = "Delay likely at ";
+		for (let i = 0; i < pred.delay.length; i++){
+			if (i == pred.delay.length -1){
+				if(pred.delay.length != 1){
+					add.innerText += "and "
+				}
+				add.innerText += pred.delay[i]+". Consider loading additional fuel in case of holding.";
+			}else{
+				add.innerText += pred.delay[i]+", ";
+			}
+		}
+		weather.appendChild(add);
+		weather.appendChild(document.createElement("br"));
+	}
+	if (pred.divert.length > 0){
+		add = document.createElement("p");
+		add.setAttribute("id", "divert");
+		add.innerText = "Diversions likely at ";
+		for (let i = 0; i < pred.divert.length; i++){
+			if (i == pred.divert.length -1){
+				if(pred.divert.length != 1){
+					add.innerText += "and "
+				}
+				add.innerText += pred.divert[i]+". Consider loading addition fuel for diversions and keeping an eye on weather at nearby airports. ";
+			}else{
+				add.innerText += pred.divert[i]+", ";
+			}
+		}
+		weather.appendChild(add);
+		weather.appendChild(document.createElement("br"));
+	}
+	if (pred.cancel.length > 0){
+		add = document.createElement("p");
+		add.setAttribute("id", "cancel");
+		add.innerText = "Cancellations likely at ";
+		for (let i = 0; i < pred.cancel.length; i++){
+			if (i == pred.cancel.length -1){
+				if(pred.cancel.length != 1){
+					add.innerText += "and "
+				}
+				add.innerText += pred.cancel[i]+". Considering adding deselecting these airports in the left sidebar. ";
+			}else{
+				add.innerText += pred.cancel[i]+", ";
+			}
+		}
+		weather.appendChild(add);
+		weather.appendChild(document.createElement("br"));
+	}
+	if (pred.cancel.length == 0 && pred.divert.length == 0 && pred.cancel.length == 0){
+		add = document.createElement("p");
+		add.innerText = "No weather delays predicted. Have a good trip!";
+		weather.appendChild(add);
+		weather.appendChild(document.createElement("br"));
+	}
 	
 	showOutput();
 }

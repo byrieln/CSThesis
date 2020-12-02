@@ -8,7 +8,7 @@ from requests import get
 from wxPrediction import getPredictions
 
 def passPredictions(route):
-    return getPredictions
+    return getPredictions(route)
 
 db = mysql.connector.connect(database='routegen', user='routegen', password='easyPw123', host='127.0.0.1')
 cursor = db.cursor()

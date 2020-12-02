@@ -3,6 +3,7 @@ import mysql.connector
 from math import sin, cos, sqrt, atan2, radians, ceil, degrees
 from time import time
 from requests import get
+from range import passPredictions
 
 db = mysql.connector.connect(database='routegen', user='routegen', password='easyPw123', host='127.0.0.1')
 cursor = db.cursor()
@@ -45,8 +46,10 @@ def routeResponse(data):
             'route':legs,
             'lengths':routeLengths(route),
             'weather': getWeather(route[1:]),
+            'predict': passPredictions(route[1:]),
             'skipAirports': data['skipAirports'],
             'skipAirlines': data['skipAirlines']
+            
         }
     
     else:
@@ -54,6 +57,7 @@ def routeResponse(data):
             'route':'No Route',
             'lengths':[],
             'weather': [],
+            'predict':[],
             'skipAirports': data['skipAirports'],
             'skipAirlines': data['skipAirlines']
         }

@@ -4,6 +4,12 @@ from math import sin, cos, sqrt, atan2, radians, ceil, degrees
 from time import time
 from requests import get
 
+
+from wxPrediction import getPredictions
+
+def passPredictions(route):
+    return getPredictions
+
 db = mysql.connector.connect(database='routegen', user='routegen', password='easyPw123', host='127.0.0.1')
 cursor = db.cursor()
 
@@ -37,6 +43,7 @@ def rangeResponse(data):
             'route':route,
             'lengths':routeLengths(route),
             'weather': getWeather(route[1:]),
+            'predict': getPredictions(route[1:]),
             'skip': data['skipAirports']
         }
     
@@ -44,9 +51,11 @@ def rangeResponse(data):
         response = {
             'route':route,
             'lengths':[],
-            'weather': getWeather(route[1:]),
+            'weather': [],
+            'predict': [],
             'skip': data['skipAirports']
         }
+    print(response)
     return dumps(response)
     
 def getWeather(route):

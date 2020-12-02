@@ -149,6 +149,8 @@ function redraw(data){
 	//add the table to the result
 	result.appendChild(table);
 	
+	weather = document.getElementById('weather');
+	
 	showOutput();
 }
 

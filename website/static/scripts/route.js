@@ -330,7 +330,7 @@ function redraw(data){
 		weather.appendChild(add);
 		weather.appendChild(document.createElement("br"));
 	}
-	if (pred.cancel.length == 0 && pred.divert.length == 0 && pred.cancel.length == 0){
+	if (pred.cancel.length == 0 && pred.divert.length == 0 && pred.delay.length == 0){
 		add = document.createElement("p");
 		add.innerText = "No weather delays predicted. Have a good trip!";
 		weather.appendChild(add);

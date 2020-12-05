@@ -153,14 +153,9 @@ def optimizeCut(route, maxRange):
     
     for i in range(len(route)):
         for j in range(i+2, len(route)):
-            #print(i,j)
-            #print(i, j, distance(route[i], route[j]), maxRange)
-            #print(route)
             if j < len(route) and distance(route[i], route[j]) < int(maxRange):
-                #print("old", route)
                 return optimizeCut(route[:i+1]+route[j:], maxRange)
                 j = i + 2
-                #print("new", route)
     return route
 
 def optimizeGen(route, maxRange, rwy, skip):

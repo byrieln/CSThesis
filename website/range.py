@@ -87,37 +87,39 @@ def findNext(route, stop, arr, maxRange, rwy, skip):
     Recursively generates a route from stop to arrival
     returns route with the next stop recursively added to the end
     """
-    #print(route)
-    #print('findNext before if', stop, codeType(stop))
+    #If within range of destination, return the route
     if distance(stop, arr) < int(maxRange):
         return route + [arr]
-    stopCoords = coords(stop)
-    lat = stopCoords[0]
-    long = stopCoords[1]
+    #Get coordinates of current airport
+    lat, long = coords(stop)
+    
+    #Run a SQL Query to get the airports within range ordered by distance from airport
     calc = "(3443.9 * 2  * atan((sqrt(pow(sin((radians(a_lat) - radians({}))/2),2) + cos(radians({})) * cos(radians(a_lat)) * pow(sin((radians(a_long) - radians({}))/2),2)))/(sqrt(1-(pow(sin((radians(a_lat) - radians({}))/2),2) + cos(radians({})) * cos(radians(a_lat)) * pow(sin((radians(a_long) - radians({}))/2),2))))))".format(lat, lat, long, lat, lat, long)
-    query = "select *, round({}) as 'Distance' from airport where a_rwy is not null AND a_rwy > {} HAVING Distance < {} and Distance > {} ORDER BY Distance ;".format(calc, rwy, maxRange, int(maxRange)/2)
+    query = "select *, round({}) as 'Distance' from airport where a_rwy is not null AND a_rwy > {} HAVING Distance < {} ORDER BY Distance DESC LIMIT 100;".format(calc, rwy, maxRange)
     cursor.execute(query)
+    #Convert results into a list
     airports = list(cursor.fetchall())
-    #print(stop, len(airports), codeType(stop))
-    best = [-1, stop, 999999]
+    
+    #Convert each entry into a list (written before I understood tuples) into a list and append the distance to arrival airport
     for i in range(len(airports)):
         airports[i] = list(airports[i])
-        #print("findNext a", airports[i][4], arr)
         airports[i].append(distance(airports[i][4], arr))
-    #print(airports)
+    
+    #Sort by the last element of the list, which is the distance
     airports.sort(key=sortKey)
-    routeLength = distance(route[-1], route[0])
-    #print('findNext top', route[-0], route[-1])
+    
+    #Iterates over airport list 
     for i in airports:
-        #if len(route) > 1:
-        #    print(len(route), distance(i[4], route[-2]), distance(route[-1], route[-2]))
-            #print('findNext', i[4], route[-2], route[-1])
+        
+        #Go to the next airport if it is already in the found route
         if i[4] in route or i[4] in skip:
             continue
         
+        #Skip this airport if the route turns back on itself
         if len(route) > 1 and distance(i[4], route[-2]) < distance(route[-1], route[-2]):
             continue
-        #print("next:", i[4], distance(i[4], route[-1]))
+        
+        #Recursively generate the route
         return findNext(route + [i[4]], i[4], arr, maxRange, rwy,skip)
     
     return "No Route"
@@ -221,7 +223,7 @@ def coords(airport):
     query = "select a_lat, a_long from airport where a_{} = '{}';".format(codeType(airport), airport)
     cursor.execute(query)
     result = cursor.fetchall()
-    return [result[0][0], result[0][1]]
+    return result[0][0], result[0][1]
 
 def getAirportInfo(code):
     query = "select * from airport where a_{} = '{}';".format(codeType(code), code)
@@ -263,34 +265,36 @@ def codeType(code):
         print(code, "error")
         return "name"
 
-"""
+#"""
 current = time()
-data = b'{"dep":"uuee","arr":"ksfo","range":"1250", "rwy": "3000"}'
+data = b'{"dep":"uuee","arr":"ksfo","range":"1250", "rwy": "3000", "skipAirports":[]}'
 print(rangeResponse(data), time()-current)
 
 current = time()
-data = b'{"dep":"wsss","arr":"eddf","range":"1300", "rwy": "3000"}'
+data = b'{"dep":"wsss","arr":"eddf","range":"1300", "rwy": "3000", "skipAirports":[]}'
 print(rangeResponse(data), time()-current)
 current = time()
-data = b'{"dep":"bikf","arr":"egyp","range":"1300", "rwy": "3000"}'
+data = b'{"dep":"bikf","arr":"egyp","range":"1300", "rwy": "3000", "skipAirports":[]}'
 print(rangeResponse(data), time()-current)
 current = time()
-data = b'{"dep":"bikf","arr":"fact","range":"1300", "rwy": "3000"}'
+data = b'{"dep":"bikf","arr":"fact","range":"1300", "rwy": "3000", "skipAirports":[]}'
 print(rangeResponse(data), time()-current)
 
 current = time()
-data = b'{"dep":"kewr","arr":"wsss","range":"1300", "rwy": "3000"}'
+data = b'{"dep":"kewr","arr":"wsss","range":"1300", "rwy": "3000", "skipAirports":[]}'
 print(rangeResponse(data), time()-current)
 
 current = time()
-data = b'{"dep":"klga","arr":"ypph","range":"1300", "rwy": "500"}'
+data = b'{"dep":"klga","arr":"ypph","range":"1300", "rwy": "500", "skipAirports":[]}'
 print(rangeResponse(data), time()-current)
 
 current = time()
-data = b'{"dep":"kmia","arr":"lirf","range":"600", "rwy": "500"}'
+data = b'{"dep":"kmia","arr":"lirf","range":"600", "rwy": "500", "skipAirports":[]}'
 print(rangeResponse(data), time()-current)
+#"""
+#"""
 current = time()
-data = b'{"dep":"klax","arr":"phnl","range":"1300", "rwy": "3000"}'
+data = b'{"dep":"klax","arr":"phnl","range":"1300", "rwy": "3000", "skipAirports":[]}'
 print(rangeResponse(data), time()-current)
 
-"""
+#"""

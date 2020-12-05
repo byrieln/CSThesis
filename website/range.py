@@ -5,12 +5,19 @@ from time import time
 from requests import get
 
 
-from wxPrediction import getPredictions
+"""
+#These 3 lines are required for to generate delay predictions
+#Currently commented out so it doesn't take long to start up
 
+from wxPrediction import getPredictions
 def passPredictions(route):
     return getPredictions(route)
+"""
 
-db = mysql.connector.connect(database='routegen', user='routegen', password='easyPw123', host='127.0.0.1')
+f = open("mysql.pw", 'r')
+pw = f.read()
+
+db = mysql.connector.connect(database='routegen', user='routegen', password='pw', host='127.0.0.1')
 cursor = db.cursor()
 
 def rangeResponse(data):
@@ -43,7 +50,8 @@ def rangeResponse(data):
             'route':route,
             'lengths':routeLengths(route),
             'weather': getWeather(route[1:]),
-            'predict': getPredictions(route[1:]),
+            #'predict': getPredictions(route[1:]),
+            'predict': [],
             'skip': data['skipAirports']
         }
     

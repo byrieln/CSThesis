@@ -197,6 +197,7 @@ def getTemp(wx):
             if dew[0] == 'M':
                 dew = int(dew[1:]) * -1    
             return wx[:i]+wx[i+1:], round(CtoF(temp), 2), round(CtoF(dew), 2) #training dataset is in fahrenheit even though it is never used in aviation...
+    return wx, 50.0, 50.0
             
 def CtoF(temp):
     temp = int(temp) * 9 / 5 
@@ -276,6 +277,8 @@ def getCloud(wx):
             return wx, 'CLR', 0.0
     if 'CB' in clouds[0]:
         clouds[0] = clouds[0][:-2]
+    if 'TCU' in clouds[0]:
+        clouds[0] = clouds[0][:-3]
     if 'VV' not in clouds[0]:
         clouds[0] = (clouds[0][:3], int(clouds[0][3:]))
     else:

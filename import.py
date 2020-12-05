@@ -2,13 +2,19 @@ import mysql.connector
 from range import distance 
 from json import loads
 
+
+f = open("mysql.pw", 'r')
+
+pw = file.read()
+
 db = mysql.connector.connect(database='routegen', user='routegen', password='easyPw123', host='127.0.0.1')
 cursor = db.cursor()
 
+#This file includes scripts to populate the MySQL database from each 
 
 
-
-"""with open("data/airports.dat", "r", encoding="utf8") as file:
+"""
+with open("data/airports.dat", "r", encoding="utf8") as file:
     #add_order = [5, 4, 1, 2, 3, ]
     for line in file:
         k = 0
@@ -28,7 +34,7 @@ cursor = db.cursor()
             line = "\"".join(temp)
         airport = line.split(",")
         query = "INSERT INTO AIRPORT VALUES("
-"""
+
             #Query Structure:
              #   	a_name varchar(128),
              #       a_city varchar(64),
@@ -40,7 +46,7 @@ cursor = db.cursor()
              #       a_alt smallint,
              #       a_timezone float,
              #       a_dst char(1)
-"""
+
         #One airport in the database has both a null ICAO and IATA code, so it is omitted
         if airport[5] == '\\N':
             continue
@@ -61,9 +67,9 @@ cursor = db.cursor()
             print("FAILED: ", query)
             break
 db.commit()
+"""
 
-
-
+#"""
 with open("data/airlines.dat", "r", encoding="utf8") as file:
     for line in file: 
         print(line)
@@ -94,7 +100,7 @@ with open("data/airlines.dat", "r", encoding="utf8") as file:
             print("Failed:", query)
             continue
 db.commit()    
-"""
+#"""
 """
 with open("data/planes.dat", "r", encoding='utf8') as file:
     #j = 0
@@ -155,7 +161,7 @@ with open("data/planes.html", "r", encoding='utf8') as file:
             print("Failed:", query)
             continue
 """
-"""
+#"""
 with open("data/Airports.txt", "r", encoding="utf8") as file:
     every = file.read().split('\n\n')[1:]
     for i in every:
@@ -176,8 +182,8 @@ with open("data/Airports.txt", "r", encoding="utf8") as file:
         query = "UPDATE airport SET a_rwy = {} WHERE a_icao = '{}';".format(maxi, icao)
         print(query)
         cursor.execute(query)
-"""
-"""
+#"""
+#"""
 with open("data/routes.dat", 'r', encoding='utf8') as file:
     id = 0
     for line in file:
@@ -223,7 +229,7 @@ with open("data/routes.dat", 'r', encoding='utf8') as file:
                 print(query)
             cursor.execute(query)
             id += 1
-"""
+#"""
 with open("data/types.json", "r", encoding="utf8") as file: 
     data = loads(file.read())
     for i in data:

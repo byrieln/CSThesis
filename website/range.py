@@ -17,7 +17,7 @@ def passPredictions(route):
 f = open("mysql.pw", 'r')
 pw = f.read()
 
-db = mysql.connector.connect(database='routegen', user='routegen', password='pw', host='127.0.0.1')
+db = mysql.connector.connect(database='routegen', user='routegen', password=pw, host='127.0.0.1')
 cursor = db.cursor()
 
 def rangeResponse(data):

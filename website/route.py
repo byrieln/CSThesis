@@ -5,7 +5,11 @@ from time import time
 from requests import get
 from range import passPredictions
 
-db = mysql.connector.connect(database='routegen', user='routegen', password='easyPw123', host='127.0.0.1')
+
+f = open("mysql.pw", 'r')
+pw = f.read()
+
+db = mysql.connector.connect(database='routegen', user='routegen', password=pw, host='127.0.0.1')
 cursor = db.cursor()
 
 def getFleet():

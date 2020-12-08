@@ -5,6 +5,7 @@ This repository contains all files need to setup and run the tool.
 The main folder of this tool contains three folders and a python script. 
 
 The "data" folder contains two .dat, a .txt, and a .json file which contain the data to populate a database. 
+I don't have distribution rights on the data, so I can't share it myself, but OpenFlights.org does make all necessary data available in .dat files. 
 
 The "databse" folder contains a .sql file, which creates a MySQL database called "routegen" for the project to use and the four tables to populate it. 
 	It does not configure a user for the Python MySQL connector to use, which must be done manually. 

@@ -6,4 +6,4 @@ data/OnTimePerformance/readme.html
 *.pyc
 website/__pycache__/wxPrediction.cpython-36.pyc
 *.pw
-*.pyc
+data/*

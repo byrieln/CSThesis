@@ -44,13 +44,14 @@ def routeResponse(data):
     route = optimize(route, data['fleet'])
     legs = getLegs(route, data['fleet'])
     
-    if type(route) == list:
-        #route = optimize(route, data['range'], data['rwy'], data['skipAirports'])
+    if type(route) == list and len(route) > 0:
+        #Toggle which 'predict' row is commented out to enable and disable predictions
         response = {
             'route':legs,
             'lengths':routeLengths(route),
             'weather': getWeather(route[1:]),
             'predict': passPredictions(route[1:]),
+            #'predict':{'delay':[], 'divert':[], 'cancel':[]},
             'skipAirports': data['skipAirports'],
             'skipAirlines': data['skipAirlines']
             
@@ -61,7 +62,7 @@ def routeResponse(data):
             'route':'No Route',
             'lengths':[],
             'weather': [],
-            'predict':[],
+            'predict':{'delay':[], 'divert':[], 'cancel':[]},
             'skipAirports': data['skipAirports'],
             'skipAirlines': data['skipAirlines']
         }

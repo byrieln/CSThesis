@@ -3,9 +3,6 @@ from range import rangeResponse
 from route import routeResponse, getFleet
 app = Flask(__name__)
 
-import mysql.connector
-from getpass import getpass
-
 @app.route('/')
 def home():
     return render_template('index.html')
@@ -30,8 +27,6 @@ def icon():
 @app.route('/range', methods=['POST'])
 def rangeInput():
     print(request.data)
-    #rangeResponse(request.data)
-    #return {"hi":"hi"}
     return rangeResponse(request.data)
     
 @app.route('/route.html')

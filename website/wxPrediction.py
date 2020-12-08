@@ -211,6 +211,7 @@ def getAltimeter(wx):
             else:
                 wx[i] = float(wx[i][1:])/100
             return wx[:i]+wx[i+1:], float(wx[i])
+    return wx, 29.92
 
 def getVis(wx):
     for i in range(len(wx)):

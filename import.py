@@ -2,15 +2,15 @@ import mysql.connector
 from range import distance 
 from json import loads
 
-
-f = open("mysql.pw", 'r')
-
+#I've stored my password in a separate file to avoid sharing here
+f = open("website/mysql.pw", 'r')
 pw = file.read()
 
 db = mysql.connector.connect(database='routegen', user='routegen', password='easyPw123', host='127.0.0.1')
 cursor = db.cursor()
 
 #This file includes scripts to populate the MySQL database from each 
+#Large chunks are commented out that import form other data sources, so uncomment those that are needed
 
 
 """

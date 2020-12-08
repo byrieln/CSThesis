@@ -5,14 +5,13 @@ from time import time
 from requests import get
 
 
-"""
+#"""
 #These 3 lines are required for to generate delay predictions
-#Currently commented out so it doesn't take long to start up
 
 from wxPrediction import getPredictions
 def passPredictions(route):
     return getPredictions(route)
-"""
+#"""
 
 f = open("mysql.pw", 'r')
 pw = f.read()
@@ -30,28 +29,18 @@ def rangeResponse(data):
     data['dep'] = data['dep'].upper()
     data['arr'] = data['arr'].upper()
     
-    dist = distance(data['dep'], data['arr'])
-    
-    if dist < int(data['range']):
-        route = {
-            'legs': 1,
-            '0':{
-                'dep':data['dep'],
-                'arr':data['arr'],
-                'dist':dist,
-                'skip':data['skipAirports']
-            }
-        }
     route = findNext([data['dep']], data['dep'], data['arr'], data['range'], data['rwy'], data['skipAirports'])
     print(route)
-    if type(route) == list:
+    
+    #If it is not a list, there is 
+    if type(route) == list and len(route) > 0:
         route = optimize(route, data['range'], data['rwy'], data['skipAirports'])
         response = {
             'route':route,
             'lengths':routeLengths(route),
             'weather': getWeather(route[1:]),
-            #'predict': getPredictions(route[1:]),
-            'predict': [],
+            'predict': getPredictions(route[1:]),
+            #'predict':{'delay':[], 'divert':[], 'cancel':[]},
             'skip': data['skipAirports']
         }
     
@@ -95,7 +84,7 @@ def findNext(route, stop, arr, maxRange, rwy, skip):
     
     #Run a SQL Query to get the airports within range ordered by distance from airport
     calc = "(3443.9 * 2  * atan((sqrt(pow(sin((radians(a_lat) - radians({}))/2),2) + cos(radians({})) * cos(radians(a_lat)) * pow(sin((radians(a_long) - radians({}))/2),2)))/(sqrt(1-(pow(sin((radians(a_lat) - radians({}))/2),2) + cos(radians({})) * cos(radians(a_lat)) * pow(sin((radians(a_long) - radians({}))/2),2))))))".format(lat, lat, long, lat, lat, long)
-    query = "select *, round({}) as 'Distance' from airport where a_rwy is not null AND a_rwy > {} HAVING Distance < {} ORDER BY Distance DESC LIMIT 100;".format(calc, rwy, maxRange)
+    query = "select *, round({}) as 'Distance' from airport where a_rwy is not null AND a_rwy >= {} HAVING Distance < {} ORDER BY Distance DESC LIMIT 100;".format(calc, rwy, maxRange)
     cursor.execute(query)
     #Convert results into a list
     airports = list(cursor.fetchall())
@@ -162,8 +151,6 @@ def optimizeGen(route, maxRange, rwy, skip):
     """
     second optimization method: Generate routes between stops to see if theyre shorter
     """
-    #print("optimizing:",route)
-    route
     dists = routeLengths(route)
     
     for i in range(len(route)):
@@ -175,13 +162,9 @@ def optimizeGen(route, maxRange, rwy, skip):
             if j >= len(route):
                 continue
             newRt = findNext([route[i]], route[i], route[j], maxRange, rwy, skip)
-            #print(newRt, route[i:j], sum(routeLengths(newRt)), sum(dists[i:j]),routeLengths(newRt), dists[i:j])
-            #print ("lengths:",sum(routeLengths(newRt)), sum(dists[i:j]))
             if newRt == "No Route":
-                #print("F"+newRt+"F")
                 continue
             if sum(routeLengths(newRt)) < sum(dists[i:j]):
-                #print("Must Opzimize!",newRt, route[i:j],"to",route[:i+1]+newRt[1:]+route[j+1:],route[:i+1],newRt[1:],route[j+1:])
                 return optimizeGen(route[:i+1]+newRt[1:]+route[j+1:], maxRange, rwy, skip)
     return route
 
@@ -260,7 +243,7 @@ def codeType(code):
         print(code, "error")
         return "name"
 
-#"""
+"""
 current = time()
 data = b'{"dep":"uuee","arr":"ksfo","range":"1250", "rwy": "3000", "skipAirports":[]}'
 print(rangeResponse(data), time()-current)
@@ -287,9 +270,14 @@ current = time()
 data = b'{"dep":"kmia","arr":"lirf","range":"600", "rwy": "500", "skipAirports":[]}'
 print(rangeResponse(data), time()-current)
 #"""
-#"""
+"""
 current = time()
 data = b'{"dep":"klax","arr":"phnl","range":"1300", "rwy": "3000", "skipAirports":[]}'
 print(rangeResponse(data), time()-current)
 
+#"""
+"""
+current = time()
+data = b'{"dep":"wsss","arr":"klax","range":"600", "rwy": "3000", "skipAirports":[]}'
+print(rangeResponse(data), time()-current)
 #"""

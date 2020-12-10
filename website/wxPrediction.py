@@ -151,15 +151,18 @@ def predict(metar):
     return delays, cancels, diversions
 
 def metarToDict(wx):
+
+    #Populate a python dictionary with weathre data
+
     if wx == 'No METAR found':
         return None
     parsed = {}
     
-    wx = wx.split(' ') #Ignore the airport identifier and time
+    wx = wx.split(' ') 
     
     parsed['airport'] = wx[0]
     
-    wx = cleanWX(wx)
+    wx = cleanWX(wx) #Remove excess data that can't be used by the rest
     
     wx, parsed['wind'] = getWind(wx)
     
@@ -329,10 +332,5 @@ def getWeather(route):
             weather.append(data)
     return weather
 
-#print(getPredictions(['BIKF', 'YSSY', 'PHNL', 'KMGW', 'ZBAA', 'UUSS', 'ZMUB', 'KJFK', 'KHZL']))
+print(getPredictions(['BIKF', 'YSSY', 'PHNL', 'KMGW', 'ZBAA', 'UUSS', 'ZMUB', 'KJFK', 'KHZL']))
 
-#print(metarToDict('PHNL 012153Z 16009KT 10SM FEW025 FEW035 27/18 A3001 RMK AO2 SLP160 T02670178'))
-#print(metarToDict('ZBAA 012200Z 02003MPS 360V060 CAVOK M02/M11 Q1035 NOSIG'))
-#print(metarToDict('KHZL 012235Z AUTO 23007KT 200V270 4SM -SN BKN012 BKN019 OVC031 00/M03 A2966 RMK AO2'))
-#print(metarToDict('KMGW 020121Z 22006KT 1 1/4SM -SN BR BKN008 OVC011 M01/M03 A2991 RMK AO2 P0001 T10111028'))
-#print(metarToDict(

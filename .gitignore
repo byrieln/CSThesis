@@ -7,3 +7,8 @@ data/OnTimePerformance/readme.html
 website/__pycache__/wxPrediction.cpython-36.pyc
 *.pw
 data/*
+ds420_data/ds420_data.zip
+*.csv
+ds420_data/wx2020_2.json
+website/ds420_readme.md
+website/__pycache__/wxPrediction.cpython-36.pyc

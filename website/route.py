@@ -3,7 +3,7 @@ import mysql.connector
 from math import sin, cos, sqrt, atan2, radians, ceil, degrees
 from time import time
 from requests import get
-from range import passPredictions
+#from range import passPredictions
 
 
 f = open("mysql.pw", 'r')
@@ -50,8 +50,8 @@ def routeResponse(data):
             'route':legs,
             'lengths':routeLengths(route),
             'weather': getWeather(route[1:]),
-            'predict': passPredictions(route[1:]),
-            #'predict':{'delay':[], 'divert':[], 'cancel':[]},
+            #'predict': passPredictions(route[1:]),
+            'predict':{'delay':[], 'divert':[], 'cancel':[]},
             'skipAirports': data['skipAirports'],
             'skipAirlines': data['skipAirlines']
             
@@ -254,10 +254,11 @@ def findRoute(route, dep, arr, types, skipAP, skipAL):
                             
         #Remove the first item from the list, since it was just evaluated
         dests.remove(dests[0])
+        iteration += 1
         
         #This is an optimization to encourage finding a route as quickly as possible
         if optimal == 999999999999:
-            iteration += 1
+            
             
             """
             This optimization works very well if the best route goes the same direction as the shortest straight line between two airports.
@@ -270,7 +271,24 @@ def findRoute(route, dep, arr, types, skipAP, skipAL):
             if iteration < 50: 
                 dests.sort(key = lambda stop:distance(stop[0], arr))
     
-    return getAP(airports, arr).getRoute()
+    code = getAP(airports, arr).getRoute()
+    print(code)
+    
+    
+    finalRoute = [code[-2]] + [arr]
+    
+    print(dep, finalRoute)
+    
+    while code[-2] != dep:
+        print("code1",code[-2])
+        code = getAP(airports, code[-2]).getRoute()
+        print("code",code, code[-2])
+        finalRoute = [code[-2]] + finalRoute
+    
+        print("fr", finalRoute)
+    
+    
+    return finalRoute
 
 
 def insert(apList, icao, dep, arr, route, optimal):

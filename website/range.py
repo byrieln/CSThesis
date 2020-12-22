@@ -5,7 +5,7 @@ from time import time
 from requests import get
 
 
-#"""
+"""
 #These 3 lines are required for to generate delay predictions
 
 from wxPrediction import getPredictions
@@ -39,8 +39,8 @@ def rangeResponse(data):
             'route':route,
             'lengths':routeLengths(route),
             'weather': getWeather(route[1:]),
-            'predict': getPredictions(route[1:]),
-            #'predict':{'delay':[], 'divert':[], 'cancel':[]},
+            #'predict': getPredictions(route[1:]),
+            'predict':{'delay':[], 'divert':[], 'cancel':[]},
             'skip': data['skipAirports']
         }
     

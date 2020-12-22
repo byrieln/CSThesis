@@ -40,6 +40,8 @@ def routeResponse(data):
     data['dep'] = data['dep'].upper()
     data['arr'] = data['arr'].upper()
     
+    data['fleet'] = removeDup(data['fleet'])
+    
     route = findRoute([data['dep']], data['dep'], data['arr'], data['fleet'], data['skipAirports'], data['skipAirlines'])
     route = optimize(route, data['fleet'])
     legs = getLegs(route, data['fleet'])
@@ -68,6 +70,15 @@ def routeResponse(data):
         }
     print(response)
     return dumps(response)
+    
+def removeDup(lst):
+    tmp = []
+    for i in lst:
+        #print('i', i)
+        if i not in tmp:
+            tmp.append(i)
+            
+    return tmp
     
 def optimize(route, types):
     for type in types:
@@ -129,7 +140,7 @@ def getAirportName(icao):
     cursor.execute(query)
     query = cursor.fetchall()
     return query[0]
-   
+
 class Airport():
     def __init__(self, code, dep, arr, route):
         self.icao = code
@@ -165,6 +176,26 @@ def airlineNameToICAO(airlines):
     return outputs
 
 def findRoute(route, dep, arr, types, skipAP, skipAL):
+
+    #Add a temporary table for aircraft types
+    query = "DROP TABLE IF EXISTS types;"
+    cursor.execute(query)
+    query = "CREATE TABLE types (icao char(4));"
+    cursor.execute(query)
+    
+    #Populate types table
+    print(types)
+    for type in types:
+        print(type)
+        query = "INSERT INTO types VALUES ('{}');".format(type)
+        cursor.execute(query)
+    
+    #Create view to avoid more selections
+    query = "DROP VIEW IF EXISTS selectedTypes;"
+    cursor.execute(query)
+    query = "CREATE VIEW selectedTypes AS SELECT p_iata FROM plane WHERE p_icao IN (select icao from types);"
+    cursor.execute(query)
+    #r_plane IN(SELECT p_iata FROM plane where p_icao = '{}')
 
     #Javascript has a list of names, so convert it to a list of ICAO codes
     skipAL = airlineNameToICAO(skipAL)
@@ -232,25 +263,25 @@ def findRoute(route, dep, arr, types, skipAP, skipAL):
                 #print(dests[0][0], getAP(airports, dests[0][0]).getRoute())
                 
                 #run a query for each aircraft type
-                for type in types:
-                    query = "select * from route where r_dep = '{}' and (r_plane IN(SELECT p_iata FROM plane where p_icao = '{}'));".format(dests[0][0], type)
-                    cursor.execute(query)
-                    query = cursor.fetchall()
-                    
-                    #Evaluate each query result 
-                    for i in query:             
-                        #If the destination is in the route to the current airport, ignore it
-                        if i[3] in dests[0][1]:
-                            continue
-                        #If told to skip an airport or airline, ignore it
-                        if i[1] in skipAL or i[3] in skipAP:
-                            continue
-                        #If there is a route from the current airport to the destination, evaluate that one next
-                        if i[3] == arr:
-                            dests.insert(1,[i[3], dests[0][1]+[i[3]]])
-                        #Otherwise put it at the end of the list
-                        else:
-                            dests.append([i[3], dests[0][1]+[i[3]]])
+                #select * from route where r_dep = '{}' and 
+                query = "select * from route where r_dep = '{}' and (r_plane IN (SELECT p_iata FROM selectedTypes));".format(dests[0][0])
+                cursor.execute(query)
+                query = cursor.fetchall()
+                
+                #Evaluate each query result 
+                for i in query:             
+                    #If the destination is in the route to the current airport, ignore it
+                    if i[3] in dests[0][1]:
+                        continue
+                    #If told to skip an airport or airline, ignore it
+                    if i[1] in skipAL or i[3] in skipAP:
+                        continue
+                    #If there is a route from the current airport to the destination, evaluate that one next
+                    if i[3] == arr:
+                        dests.insert(1,[i[3], dests[0][1]+[i[3]]])
+                    #Otherwise put it at the end of the list
+                    else:
+                        dests.append([i[3], dests[0][1]+[i[3]]])
                             
         #Remove the first item from the list, since it was just evaluated
         dests.remove(dests[0])
@@ -287,6 +318,9 @@ def findRoute(route, dep, arr, types, skipAP, skipAL):
     
         print("fr", finalRoute)
     
+    #Drop the temporary table
+    query = "DROP TABLE types"
+    cursor.execute(query)
     
     return finalRoute
 
